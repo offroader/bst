@@ -5,6 +5,7 @@
 #include <ctime>
 
 #include "Tree.cpp"
+#include "OST.cpp"
 
 using namespace std;
 
@@ -12,14 +13,46 @@ void orderedInsert();
 void randomInsert();
 void randomInsert(Tree*, int);
 void printInOrder(Node*);
+void drawTree(OSTNode*);
 void destroyTree(Node*);
 Node* treeMinimum(Node*);
 int tree_to_vine(Node*);
 int fullSize(int);
 void vine_to_tree(Node*, int);
 void compression(Node*, int);
+OSTNode* balanceR (OSTNode* h);
+OSTNode* rotR (OSTNode* h);
+OSTNode* rotL (OSTNode* h);
+OSTNode* partR (OSTNode* h, int k);
 
 int main(int argc, char** argv) {
+	OST* tree = new OST();
+	int N = 0;
+
+	for (int i = 10; i < 20; i++) {
+		OSTNode* node = new OSTNode(i);
+		tree->insertNode(node);
+		N++;
+	}
+
+	tree->insertNode(new OSTNode(3));
+	tree->insertNode(new OSTNode(5));
+	tree->insertNode(new OSTNode(7));
+	tree->insertNode(new OSTNode(6));
+	tree->insertNode(new OSTNode(8));
+	tree->insertNode(new OSTNode(1));
+	tree->insertNode(new OSTNode(4));
+
+	cout << "tree root: " << tree->root->key <<endl;
+
+	drawTree(tree->root);
+
+	balanceR(tree->root);
+	cout << "balanceRed:" <<endl;
+	drawTree(tree->root);
+}
+
+int main2(int argc, char** argv) {
 	Tree* tree = new Tree();
 	int N = 0;
 
@@ -255,4 +288,60 @@ void vine_to_tree(Node* root, int size) {
 	for (size = fullCount; size > 1; size /= 2) {
 		compression(root, size / 2);
 	}
+}
+
+void drawTree (OSTNode* x) {
+	static int node_level = -1;
+ if (x != NULL) {
+    node_level += 1;
+    drawTree(x->right);
+ 	for (int i = 0; i < 7 * node_level; i++) {
+ 		printf(" ");
+ 	}
+    printf("%d (%d)\n" , x->key, x->size);
+    drawTree(x->left);
+    node_level -= 1;
+   }
+}
+
+// Sedgewick
+
+OSTNode* balanceR (OSTNode* h) {
+   if (!h || h->size < 2) return h;
+   h = partR (h, h->size/2);
+   h->left  = balanceR (h->left);
+   h->right = balanceR (h->right);
+   return h;
+}
+
+OSTNode* rotR (OSTNode* h) {
+	int rNr = h->right ? h->right->size : 0,
+       rNl = h->left->right ? h->left->right->size : 0,
+       lN  = h->left->left  ? h->left->left->size  : 0;
+   OSTNode* x = h->left;  h->left = x->right; x->right = h;
+   h->size = rNr + rNl;  x->size = lN + h->size;
+   return x;
+}
+
+OSTNode* rotL (OSTNode* h) {
+	int lNl = h->left ? h->left->size : 0,
+       lNr = h->right->left ? h->right->left->size : 0,
+       rN  = h->right->right ? h->right->right->size : 0;
+   OSTNode* x = h->right; h->right = x->left; x->left = h;
+   h->size = lNl + lNr; x->size = rN + h->size;
+   return x;
+}
+
+OSTNode* partR (OSTNode* h, int k) {
+   int t = h->left ? h->left->size : 0;
+   if (t > k) {
+	   h->left = partR(h->left, k);
+	   h = rotR(h);
+   }
+   if (t < k) {
+	   h->right = partR(h->right, k-t-1);
+	   h = rotL(h);
+   }
+
+   return h;
 }
