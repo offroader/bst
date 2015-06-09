@@ -9,6 +9,7 @@ public:
 	Node* parent;
 	Node* left;
 	Node* right;
+	int height;
 
 	Node (int key) {
 		this->key = key;

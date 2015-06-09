@@ -127,7 +127,7 @@ public:
 		x->parent = y;
 	}
 
-	int tree_to_vine(Node* root) {
+	int tree_to_vine2(Node* root) {
 	    Node* vineTail = new Node(-1);
 	    vineTail->right = root;
 	    Node* remainder = vineTail->right;
@@ -155,6 +155,34 @@ public:
 
 	    return size;
 	}
+
+	int tree_to_vine (Node* root) {
+	   Node* vineTail = root;
+	   Node* remainder = vineTail->right;
+
+	   int size = 0;
+	   Node* tempPtr;
+	   while (remainder != NULL) {
+		   //If no leftward subtree, move rightward
+		  if ( remainder->left == NULL ) {
+			 vineTail = remainder;
+			 remainder = remainder->right;
+			 size++;
+		  }
+	//    else eliminate the leftward subtree by rotations
+		  else {
+			  /* Rightward rotation */
+			 tempPtr = remainder->left;
+			 remainder->left = tempPtr->right;
+			 tempPtr->right = remainder;
+			 remainder = tempPtr;
+			 vineTail->right = tempPtr;
+		  }
+	   }
+
+	   return size;
+	}
+
 
 	int fullSize(int size) {
 		int n = 1;
@@ -185,8 +213,14 @@ public:
 	}
 
 	void balance () {
-		int size = tree_to_vine(root);
-		vine_to_tree(root, size);
+		Node* pseudo_root = new Node(-1);
+		pseudo_root->right = root;
+
+		int size = tree_to_vine(pseudo_root);
+		vine_to_tree(pseudo_root, size);
+
+		root = pseudo_root->right;
+		correctTree(root, NULL);
 	}
 
 	virtual ~Tree() {};
@@ -253,6 +287,24 @@ public:
 		//		cout << "deleted node:" << node->key << endl;
 				delete node;
 			}
+		}
+
+		inline int Max( int l, int r) {
+			return l > r ? l : r;
+		}
+
+		void correctTree (Node* node, Node* parent) {
+			if (node != NULL) {
+				int LtHt, RtHt;
+
+		      correctTree (node->left, node);
+		      correctTree (node->right, node);
+
+		      node->parent = parent;
+		      LtHt = node->left  ? node->left->height  : 0;
+		      RtHt = node->right ? node->right->height : 0;
+		      node->height = 1 + Max( LtHt, RtHt );
+		   }
 		}
 
 };

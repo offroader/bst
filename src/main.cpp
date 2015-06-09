@@ -9,14 +9,16 @@
 
 using namespace std;
 
+
 void osttest();
+void rbtest();
 void orderedInsert();
 void randomInsert();
 void randomInsert(Tree*, int);
 void printInOrder(Node*);
 
 int main(int argc, char** argv) {
-	osttest();
+	rbtest();
 
 	return 0;
 }
@@ -51,6 +53,38 @@ void osttest () {
 	tree->destroy();
 	cout<< " ended.";
 }
+
+
+void rbtest () {
+	Tree* tree = new Tree();
+
+	tree->insertNode(new Node(3));
+	tree->insertNode(new Node(5));
+	tree->insertNode(new Node(7));
+	tree->insertNode(new Node(6));
+	tree->insertNode(new Node(8));
+	tree->insertNode(new Node(1));
+	tree->insertNode(new Node(4));
+
+	for (int i = 100; i < 120; i++) {
+		//tree->insertNode(new OSTNode(i));
+	}
+
+	cout << "tree root: " << tree->root->key <<endl;
+	tree->draw();
+
+	tree->balance();
+
+	cout << endl;
+	cout << "balanced:" << endl;
+	cout << "tree root: " << tree->root->key <<endl;
+	tree->draw();
+
+	cout<< "destroying tree";
+	tree->destroy();
+	cout<< " ended.";
+}
+
 
 void orderedInsert() {
 	Tree* tree = new Tree();
