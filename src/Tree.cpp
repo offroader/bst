@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <fstream>
 #include "Node.cpp"
 
 using namespace std;
@@ -126,7 +127,87 @@ public:
 		x->parent = y;
 	}
 
+	int tree_to_vine(Node* root) {
+	    Node* vineTail = new Node(-1);
+	    vineTail->right = root;
+	    Node* remainder = vineTail->right;
+
+	    root = vineTail;
+
+	    Node* tempPtr;
+	    int size = 0;
+	    while (remainder != NULL) {
+	        if (remainder->left == NULL) {
+	            vineTail = remainder;
+	            remainder = remainder->right;
+	            size++;
+	        } else {
+	            // Rightward rotation
+	            tempPtr = remainder->left;
+	            remainder->left = tempPtr->right;
+	            tempPtr->right = remainder;
+	            remainder = tempPtr;
+	            vineTail->right = tempPtr;
+	        }
+	    }
+
+	    root = root->right;
+
+	    return size;
+	}
+
+	int fullSize(int size) {
+		int n = 1;
+		while (n <= size) {
+			n = n + n + 1;
+		}
+		return n / 2;
+	}
+
+	void compression(Node* root, int count) {
+		Node* scanner = root;
+		//Leftward rotation
+		for (int i = 0; i < count; i++) {
+			Node* child = scanner->right;
+			scanner->right = child->right;
+			scanner = scanner->right;
+			child->right = scanner->left;
+			scanner->left = child;
+		}
+	}
+
+	void vine_to_tree(Node* root, int size) {
+		int fullCount = fullSize(size);
+		compression(root, size - fullCount);
+		for (size = fullCount; size > 1; size /= 2) {
+			compression(root, size / 2);
+		}
+	}
+
+	void balance () {
+		int size = tree_to_vine(root);
+		vine_to_tree(root, size);
+	}
+
 	virtual ~Tree() {};
+
+	void drawTree (Node* x) {
+			static int node_level = -1;
+		 if (x != NULL) {
+		    node_level += 1;
+		    drawTree(x->right);
+		 	for (int i = 0; i < 7 * node_level; i++) {
+		 		printf(" ");
+		 	}
+		    printf("%d \n" , x->key);
+		    drawTree(x->left);
+		    node_level -= 1;
+		   }
+		}
+
+		void draw () {
+			drawTree(root);
+		}
 
 
 //    void compression(Node* root, int count) {
@@ -156,6 +237,23 @@ public:
 //            compression(root, size / 2);
 //        }
 //    }
+
+		void destroy () {
+			destroyTree(root);
+		}
+
+		void destroyTree(Node* node) {
+			if (node != NULL) {
+				if (node->left != NULL) {
+					destroyTree(node->left);
+				}
+				if (node->right != NULL) {
+					destroyTree(node->right);
+				}
+		//		cout << "deleted node:" << node->key << endl;
+				delete node;
+			}
+		}
 
 };
 
