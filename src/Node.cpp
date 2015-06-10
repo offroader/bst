@@ -17,6 +17,7 @@ public:
 		left = NULL;
 		right = NULL;
 		color = 0;
+		height = 0;
 	}
 
 	virtual ~Node() {};

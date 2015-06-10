@@ -38,7 +38,8 @@ public:
 		z->left = NULL;
 		z->right = NULL;
 		z->color = 1;
-		//insertFixup(z);
+
+		insertFixup(z);
 
 		return 1;
 	}
@@ -278,12 +279,8 @@ public:
 
 		void destroyTree(Node* node) {
 			if (node != NULL) {
-				if (node->left != NULL) {
-					destroyTree(node->left);
-				}
-				if (node->right != NULL) {
-					destroyTree(node->right);
-				}
+				destroyTree(node->left);
+				destroyTree(node->right);
 		//		cout << "deleted node:" << node->key << endl;
 				delete node;
 			}
@@ -295,17 +292,50 @@ public:
 
 		void correctTree (Node* node, Node* parent) {
 			if (node != NULL) {
-				int LtHt, RtHt;
+			    int LtHt, RtHt;
 
-		      correctTree (node->left, node);
-		      correctTree (node->right, node);
+			    correctTree (node->left, node);
+			    correctTree (node->right, node);
 
-		      node->parent = parent;
-		      LtHt = node->left  ? node->left->height  : 0;
-		      RtHt = node->right ? node->right->height : 0;
-		      node->height = 1 + Max( LtHt, RtHt );
+			    node->parent = parent;
+			    LtHt = node->left  ? node->left->height : 0;
+			    RtHt = node->right ? node->right->height : 0;
+			    node->height = 1 + Max( LtHt, RtHt );
 		   }
 		}
 
+		void printHeight () {
+			correctTree(root, NULL);
+			cout << "Tree height: " << root->height << endl;
+		}
+
+		void printInOrder (Node* node) {
+			if (node != NULL) {
+				printInOrder(node->left);
+				cout << node->key << endl;
+				printInOrder(node->right);
+			}
+		}
+
+
+		void printInOrder () {
+			printInOrder(root);
+		}
+
+		void printRoot () {
+			cout << "root is: " << root->key << endl;
+		}
+
+		int count (Node* node) {
+			if (node == NULL) {
+				return 0;
+			} else {
+				return 1 + count(node->left) + count(node->right);
+			}
+		}
+
+		void printSize () {
+			cout << "Tree size: " << count(root) << endl;
+		}
 };
 

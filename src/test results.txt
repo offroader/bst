@@ -1,0 +1,11 @@
+Tree size: 10000000
+Tree size: 0
+Build time: 60560 ms
+Tree size: 10000000
+Tree height: 28
+root is: 43004185
+Tree size: 10000000
+Tree height: 24
+root is: 57123915
+Time: 11240 ms
+

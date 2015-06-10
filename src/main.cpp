@@ -15,9 +15,10 @@ void rbtest();
 void orderedInsert();
 void randomInsert();
 void randomInsert(Tree*, int);
-void printInOrder(Node*);
 
 int main(int argc, char** argv) {
+	srand (time(NULL));
+
 	rbtest();
 
 	return 0;
@@ -35,10 +36,6 @@ void osttest () {
 	tree->insertNode(new OSTNode(1));
 	tree->insertNode(new OSTNode(4));
 
-	for (int i = 100; i < 120; i++) {
-		//tree->insertNode(new OSTNode(i));
-	}
-
 	cout << "tree root: " << tree->root->key <<endl;
 	tree->draw();
 
@@ -53,9 +50,40 @@ void osttest () {
 	tree->destroy();
 	cout<< " ended.";
 }
-
-
 void rbtest () {
+	int tree_size = 10000000;
+	Tree* tree = new Tree();
+	clock_t start, finish;
+
+	cout<< "Tree size: " << tree_size << endl;
+    tree->printSize();
+
+	start = clock();
+	randomInsert(tree, tree_size);
+	finish = clock();
+	cout << "Build time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+
+	//tree->printInOrder();
+
+	tree->printSize();
+	tree->printHeight();
+	tree->printRoot();
+
+	start = clock();
+	tree->balance();
+	finish = clock();
+
+	tree->printSize();
+	tree->printHeight();
+	tree->printRoot();
+
+	cout << "Time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+
+	tree->destroy();
+
+}
+
+void rbtest2 () {
 	Tree* tree = new Tree();
 
 	tree->insertNode(new Node(3));
@@ -65,10 +93,6 @@ void rbtest () {
 	tree->insertNode(new Node(8));
 	tree->insertNode(new Node(1));
 	tree->insertNode(new Node(4));
-
-	for (int i = 100; i < 120; i++) {
-		//tree->insertNode(new OSTNode(i));
-	}
 
 	cout << "tree root: " << tree->root->key <<endl;
 	tree->draw();
@@ -100,19 +124,24 @@ void orderedInsert() {
 
 	finish = clock();
 	cout << "Time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
-
-
 }
 
 
 void randomInsert(Tree* tree, int n) {
 	for (int i = 0; i < n; i++) {
-		Node* node = new Node(std::rand() % 100);
+		int k;
+		if (std::rand() % 10 > 5) {
+			k = std::rand() % 100000000;
+		} else {
+			k = std::rand() % 1000;
+		}
+		Node* node = new Node(k);
 		int inserted = tree->insertNode(node);
-		cout<< (inserted == 1 ? "inserted " : "skipped ")<<node->key<< endl;
+		//cout<< i << (inserted == 1 ? "inserted " : "skipped ")<<node->key<< endl;
 		if (inserted == 0) {
-			n++;
 			delete node;
+			i--;
+			continue;
 		}
 	}
 }
@@ -154,26 +183,3 @@ void randomInsert() {
 
 	tree->destroy();
 }
-
-void printInOrder(Node* node) {
-	if (node != NULL) {
-		if (node->left != NULL) {
-			//cout << " key: " << node->key << " left: " << node->left->key << endl;
-			cout << node->left->key << " <--- " << node->key << endl;
-			printInOrder(node->left);
-		}
-//		int p = -1;
-//		if (node->parent != NULL) {
-//			p = node->parent->key;
-//		}
-		//cout << " key: " << node->key << " parent:" << p << endl;
-
-		if (node->right != NULL) {
-			//cout << " key: " << node->key << " right: " << node->right->key << endl;
-			cout << node->key << " ---> " << node->right->key << endl;
-			printInOrder(node->right);
-		}
-	}
-	cout << endl;
-}
-
