@@ -11,7 +11,7 @@ using namespace std;
 
 
 void osttest();
-void rbtest();
+void rbtest(int);
 void orderedInsert();
 void randomInsert();
 void randomInsert(Tree*, int);
@@ -19,7 +19,9 @@ void randomInsert(Tree*, int);
 int main(int argc, char** argv) {
 	srand (time(NULL));
 
-	rbtest();
+	rbtest(1000000);
+	rbtest(100000);
+	rbtest(10000);
 
 	return 0;
 }
@@ -50,12 +52,11 @@ void osttest () {
 	tree->destroy();
 	cout<< " ended.";
 }
-void rbtest () {
-	int tree_size = 10000000;
+void rbtest (int tree_size) {
 	Tree* tree = new Tree();
 	clock_t start, finish;
 
-	cout<< "Tree size: " << tree_size << endl;
+	cout<< endl<< "Tree size: " << tree_size << endl;
     tree->printSize();
 
 	start = clock();
@@ -80,6 +81,8 @@ void rbtest () {
 	cout << "Time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
 
 	tree->destroy();
+
+	cout << "Tree is destroyed" << endl << endl;
 
 }
 

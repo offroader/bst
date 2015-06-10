@@ -9,3 +9,42 @@ Tree height: 24
 root is: 57123915
 Time: 11240 ms
 
+
+Tree size: 1000000
+Tree size: 0
+Build time: 4740 ms
+Tree size: 1000000
+Tree height: 24
+root is: 45320720
+Tree size: 1000000
+Tree height: 20
+root is: 51205541
+Time: 760 ms
+Tree is destroyed
+
+
+Tree size: 100000
+Tree size: 0
+Build time: 460 ms
+Tree size: 100000
+Tree height: 21
+root is: 40190699
+Tree size: 100000
+Tree height: 17
+root is: 64076890
+Time: 80 ms
+Tree is destroyed
+
+
+Tree size: 10000
+Tree size: 0
+Build time: 40 ms
+Tree size: 10000
+Tree height: 17
+root is: 15497280
+Tree size: 10000
+Tree height: 14
+root is: 49237965
+Time: 10 ms
+Tree is destroyed
+
