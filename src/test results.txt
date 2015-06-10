@@ -1,50 +1,108 @@
-Tree size: 10000000
-Tree size: 0
-Build time: 60560 ms
-Tree size: 10000000
-Tree height: 28
-root is: 43004185
-Tree size: 10000000
-Tree height: 24
-root is: 57123915
-Time: 11240 ms
+RB tree size: 1000
 
-
-Tree size: 1000000
-Tree size: 0
-Build time: 4740 ms
-Tree size: 1000000
-Tree height: 24
-root is: 45320720
-Tree size: 1000000
-Tree height: 20
-root is: 51205541
-Time: 760 ms
+Build time: 0 ms
+Tree height: 13
+root is: 645329
+Tree height: 10
+root is: 911
+Time: 0 ms
 Tree is destroyed
 
 
-Tree size: 100000
-Tree size: 0
-Build time: 460 ms
-Tree size: 100000
+OST tree size: 1000
+
+Build time: 0 ms
 Tree height: 21
-root is: 40190699
-Tree size: 100000
+root is: 413
+Tree height: 14
+root is: 898
+Time: 0 ms
+Tree is destroyed
+
+
+RB tree size: 10000
+
+Build time: 30 ms
 Tree height: 17
-root is: 64076890
+root is: 45921282
+Tree height: 14
+root is: 49787015
+Time: 0 ms
+Tree is destroyed
+
+
+OST tree size: 10000
+
+Build time: 40 ms
+Tree height: 32
+root is: 658
+Tree height: 19
+root is: 38539307
+Time: 0 ms
+Tree is destroyed
+
+
+RB tree size: 100000
+
+Build time: 480 ms
+Tree height: 21
+root is: 37118563
+Tree height: 17
+root is: 64043119
 Time: 80 ms
 Tree is destroyed
 
 
-Tree size: 10000
-Tree size: 0
-Build time: 40 ms
-Tree size: 10000
-Tree height: 17
-root is: 15497280
-Tree size: 10000
-Tree height: 14
-root is: 49237965
-Time: 10 ms
+OST tree size: 100000
+
+Build time: 740 ms
+Tree height: 44
+root is: 299
+Tree height: 21
+root is: 47881814
+Time: 40 ms
 Tree is destroyed
 
+
+RB tree size: 1000000
+
+Build time: 5110 ms
+Tree height: 25
+root is: 48088660
+Tree height: 20
+root is: 51276012
+Time: 780 ms
+Tree is destroyed
+
+
+OST tree size: 1000000
+
+Build time: 7730 ms
+Tree height: 53
+root is: 25
+Tree height: 25
+root is: 48743911
+Time: 590 ms
+Tree is destroyed
+
+
+RB tree size: 10000000
+
+Build time: 76640 ms
+Tree height: 29
+root is: 37333701
+Tree height: 24
+root is: 57128022
+Time: 11260 ms
+Tree is destroyed
+
+
+OST tree size: 10000000
+
+Build time: 116000 ms
+Tree height: 62
+root is: 526
+Tree height: 31
+root is: 48903638
+Time: 6910 ms
+Tree is destroyed

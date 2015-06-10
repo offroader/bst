@@ -10,24 +10,70 @@
 using namespace std;
 
 
-void osttest();
+void osttest(int);
 void rbtest(int);
-void orderedInsert();
-void randomInsert();
 void randomInsert(Tree*, int);
+void randomInsert(OST*, int);
 
 int main(int argc, char** argv) {
 	srand (time(NULL));
 
-	rbtest(1000000);
-	rbtest(100000);
+	rbtest(1000);
+	osttest(1000);
+
 	rbtest(10000);
+	osttest(10000);
+
+	rbtest(100000);
+	osttest(100000);
+
+	rbtest(1000000);
+	osttest(1000000);
+
+	rbtest(10000000);
+	osttest(10000000);
+
+
+
 
 	return 0;
 }
 
+void osttest (int tree_size) {
+	OST* tree = new OST();
+	clock_t start, finish;
 
-void osttest () {
+	cout<< endl<< "OST tree size: " << tree_size << endl;
+    tree->printSize();
+
+	start = clock();
+	randomInsert(tree, tree_size);
+	finish = clock();
+	cout << "Build time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+
+	//tree->printInOrder();
+
+	//tree->printSize();
+	tree->printHeight();
+	tree->printRoot();
+
+	start = clock();
+	tree->balance();
+	finish = clock();
+
+	//tree->printSize();
+	tree->printHeight();
+	tree->printRoot();
+
+	cout << "Time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+
+	tree->destroy();
+
+	cout << "Tree is destroyed" << endl << endl;
+
+}
+
+void osttest2 () {
 	OST* tree = new OST();
 
 	tree->insertNode(new OSTNode(3));
@@ -52,11 +98,12 @@ void osttest () {
 	tree->destroy();
 	cout<< " ended.";
 }
+
 void rbtest (int tree_size) {
 	Tree* tree = new Tree();
 	clock_t start, finish;
 
-	cout<< endl<< "Tree size: " << tree_size << endl;
+	cout<< endl<< "RB tree size: " << tree_size << endl;
     tree->printSize();
 
 	start = clock();
@@ -66,7 +113,7 @@ void rbtest (int tree_size) {
 
 	//tree->printInOrder();
 
-	tree->printSize();
+	//tree->printSize();
 	tree->printHeight();
 	tree->printRoot();
 
@@ -74,7 +121,7 @@ void rbtest (int tree_size) {
 	tree->balance();
 	finish = clock();
 
-	tree->printSize();
+	//tree->printSize();
 	tree->printHeight();
 	tree->printRoot();
 
@@ -141,6 +188,24 @@ void randomInsert(Tree* tree, int n) {
 		Node* node = new Node(k);
 		int inserted = tree->insertNode(node);
 		//cout<< i << (inserted == 1 ? "inserted " : "skipped ")<<node->key<< endl;
+		if (inserted == 0) {
+			delete node;
+			i--;
+			continue;
+		}
+	}
+}
+
+void randomInsert(OST* tree, int n) {
+	for (int i = 0; i < n; i++) {
+		int k;
+		if (std::rand() % 10 > 5) {
+			k = std::rand() % 100000000;
+		} else {
+			k = std::rand() % 1000;
+		}
+		OSTNode* node = new OSTNode(k);
+		int inserted = tree->insertNode(node);
 		if (inserted == 0) {
 			delete node;
 			i--;

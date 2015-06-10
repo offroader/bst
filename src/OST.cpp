@@ -109,15 +109,13 @@ public:
 	   return h;
 	}
 
-	int SetN( OSTNode* h )
-	{
-	   int lN, rN;
-
+	int updateSizes (OSTNode* h) {
 	   if ( h == NULL ) return 0;
 
-	   lN = SetN ( h->left );
-	   rN = SetN ( h->right);
+	   int lN = updateSizes(h->left);
+	   int rN = updateSizes(h->right);
 	   h->size = 1 + lN + rN;
+
 	   return h->size;
 	}
 
@@ -140,7 +138,7 @@ public:
 	}
 
 	void balance () {
-		SetN(root);
+		updateSizes(root);
 		root = balanceR(root);
 	}
 
@@ -162,5 +160,49 @@ public:
 	}
 
 	virtual ~OST() {};
+
+	inline int Max (int l, int r) {
+		return l > r ? l : r;
+	}
+
+	int calculateHeight (OSTNode* node) {
+		if (node != NULL) {
+			return 1 + Max (calculateHeight(node->left), calculateHeight(node->right));
+		}
+		return 0;
+	}
+
+	void printHeight () {
+		cout << "Tree height: " << calculateHeight(root) << endl;
+	}
+
+	void printInOrder (OSTNode* node) {
+		if (node != NULL) {
+			printInOrder(node->left);
+			cout << node->key << endl;
+			printInOrder(node->right);
+		}
+	}
+
+
+	void printInOrder () {
+		printInOrder(root);
+	}
+
+	void printRoot () {
+		cout << "root is: " << root->key << endl;
+	}
+
+	int count (OSTNode* node) {
+		if (node == NULL) {
+			return 0;
+		} else {
+			return 1 + count(node->left) + count(node->right);
+		}
+	}
+
+	void printSize () {
+		cout << "Tree size: " << count(root) << endl;
+	}
 };
 
