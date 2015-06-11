@@ -19,6 +19,9 @@ public:
 		OSTNode* x = root;
 		while (x != NULL) {
 			y = x;
+			if (z->key == x->key) {
+				return 0;
+			}
 			x->size++;
 			if (z->key < x->key) {
 				x = x->left;

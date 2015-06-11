@@ -3,40 +3,79 @@
 #include <fstream>
 #include <string>
 #include <ctime>
+#include <map>
 
 #include "Tree.cpp"
 #include "OST.cpp"
 
 using namespace std;
 
-
+void test1(int);
 void osttest(int);
 void rbtest(int);
 void randomInsert(Tree*, int);
 void randomInsert(OST*, int);
+void randomInsert(Tree*, OST*, int);
 
 int main(int argc, char** argv) {
 	srand (time(NULL));
 
-	rbtest(1000);
-	osttest(1000);
+//	rbtest(1000);
+//	osttest(1000);
+//
+//	rbtest(10000);
+//	osttest(10000);
+//
+//	rbtest(100000);
+//	osttest(100000);
+//
+//	rbtest(1000000);
+//	osttest(1000000);
+//
+//	rbtest(10000000);
+//	osttest(10000000);
 
-	rbtest(10000);
-	osttest(10000);
-
-	rbtest(100000);
-	osttest(100000);
-
-	rbtest(1000000);
-	osttest(1000000);
-
-	rbtest(10000000);
-	osttest(10000000);
-
-
-
+	test1(1000);
 
 	return 0;
+}
+
+void test1(int tree_size) {
+	OST* ost = new OST();
+	Tree* rbt = new Tree();
+
+	cout << endl << "Tree size: " << tree_size << endl;
+
+	randomInsert(rbt, ost, tree_size);
+
+	cout << "Size of rbt: ";
+	rbt->printSize();
+	cout << endl;
+	cout << "Size of ost: ";
+	ost->printSize();
+
+	cout << endl;
+
+	cout << "Height of rbt: ";
+	rbt->printHeight();
+	cout << endl;
+	cout << "Height of ost: ";
+	ost->printHeight();
+
+
+	cout << endl;
+
+	cout << "Root of rbt: ";
+	rbt->printRoot();
+	cout << endl;
+	cout << "Root of ost: ";
+	ost->printRoot();
+
+
+	cout << endl;
+
+	rbt->destroy();
+	ost->destroy();
 }
 
 void osttest (int tree_size) {
@@ -73,32 +112,6 @@ void osttest (int tree_size) {
 
 }
 
-void osttest2 () {
-	OST* tree = new OST();
-
-	tree->insertNode(new OSTNode(3));
-	tree->insertNode(new OSTNode(5));
-	tree->insertNode(new OSTNode(7));
-	tree->insertNode(new OSTNode(6));
-	tree->insertNode(new OSTNode(8));
-	tree->insertNode(new OSTNode(1));
-	tree->insertNode(new OSTNode(4));
-
-	cout << "tree root: " << tree->root->key <<endl;
-	tree->draw();
-
-	tree->balance();
-
-	cout << endl;
-	cout << "balanceRed:" << endl;
-	cout << "tree root: " << tree->root->key <<endl;
-	tree->draw();
-
-	cout<< "destroying tree";
-	tree->destroy();
-	cout<< " ended.";
-}
-
 void rbtest (int tree_size) {
 	Tree* tree = new Tree();
 	clock_t start, finish;
@@ -132,50 +145,6 @@ void rbtest (int tree_size) {
 	cout << "Tree is destroyed" << endl << endl;
 
 }
-
-void rbtest2 () {
-	Tree* tree = new Tree();
-
-	tree->insertNode(new Node(3));
-	tree->insertNode(new Node(5));
-	tree->insertNode(new Node(7));
-	tree->insertNode(new Node(6));
-	tree->insertNode(new Node(8));
-	tree->insertNode(new Node(1));
-	tree->insertNode(new Node(4));
-
-	cout << "tree root: " << tree->root->key <<endl;
-	tree->draw();
-
-	tree->balance();
-
-	cout << endl;
-	cout << "balanced:" << endl;
-	cout << "tree root: " << tree->root->key <<endl;
-	tree->draw();
-
-	cout<< "destroying tree";
-	tree->destroy();
-	cout<< " ended.";
-}
-
-
-void orderedInsert() {
-	Tree* tree = new Tree();
-	int N = 10;
-	cout << "ordered list (size: " << N << ") using insert method:" << endl;
-	clock_t start, finish;
-	start = clock();
-
-	for (int i = 0; i < N; i++) {
-		Node* node = new Node(i+1);
-		tree->insertNode(node);
-	}
-
-	finish = clock();
-	cout << "Time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
-}
-
 
 void randomInsert(Tree* tree, int n) {
 	for (int i = 0; i < n; i++) {
@@ -214,40 +183,32 @@ void randomInsert(OST* tree, int n) {
 	}
 }
 
-void randomInsert() {
-	Tree* tree = new Tree();
+void randomInsert(Tree* rbt, OST* ost, int n) {
+	map<int, int> mymap;
 
-	int N = 1000;
-
-	cout << "unordered list (size: " << N << ") using insert method:" << endl;
-	clock_t start, finish;
-	start = clock();
-
-	int size = 10000;
-	int arr[size];
-	int i = 0;
-	string line;
-
-	ifstream myfile("data.in");
-	if (myfile.is_open()) {
-		while (getline(myfile, line) && i < size - 1) {
-			arr[i] = atoi(line.c_str());
-			i++;
+	for (int i = 0; i < n; i++) {
+		int k;
+		if (std::rand() % 10 > 5) {
+			k = std::rand() % 100000000;
+		} else {
+			k = std::rand() % 1000;
 		}
-		myfile.close();
-	}
 
-	for (int i = 0; i < (N / size); i++) {
-		for (int j = 0; j < size; j++) {
-			int r = std::rand() % 10 + 1;
-			int number = arr[j] + r;
-			Node* node = new Node(number);
-			tree->insertNode(node);
+		if (mymap.find(k) == mymap.end()) {
+			mymap.insert(pair<int,int>(k, 1));
+		} else {
+			i--;
+			continue;
 		}
 	}
 
-	finish = clock();
-	cout << "Time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+	map<int,int>::iterator it;
 
-	tree->destroy();
+	for (it=mymap.begin(); it != mymap.end(); ++it) {
+		int k = it->first;
+
+		ost->insertNode(new OSTNode(k));
+		rbt->insertNode(new Node(k));
+	}
 }
+
