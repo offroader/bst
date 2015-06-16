@@ -339,5 +339,19 @@ public:
 		void printSize () {
 			cout << "Tree size: " << count(root) << endl;
 		}
+
+		int updateSizes (Node* h) {
+		   if ( h == NULL ) return 0;
+
+		   int lN = updateSizes(h->left);
+		   int rN = updateSizes(h->right);
+		   h->size = 1 + lN + rN;
+
+		   return h->size;
+		}
+
+		void convertToOST () {
+			updateSizes(root);
+		}
 };
 

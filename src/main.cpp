@@ -10,6 +10,7 @@
 
 using namespace std;
 
+void test(int);
 void test1(int);
 void osttest(int);
 void rbtest(int);
@@ -35,9 +36,33 @@ int main(int argc, char** argv) {
 //	rbtest(10000000);
 //	osttest(10000000);
 
-	test1(1000);
+	test(1000);
 
 	return 0;
+}
+
+
+void test (int tree_size) {
+	Tree* tree = new Tree();
+	cout << endl << "Tree size: " << tree_size << endl;
+
+	randomInsert(tree, tree_size);
+
+	cout << "Size of tree: ";
+	tree->printSize();
+	cout << endl;
+
+	cout << "Height of tree: ";
+	tree->printHeight();
+	cout << endl;
+
+	tree->printRoot();
+	cout << endl;
+
+	tree->convertToOST();
+
+
+	tree->destroy();
 }
 
 void test1(int tree_size) {
@@ -145,6 +170,8 @@ void rbtest (int tree_size) {
 }
 
 void randomInsert(Tree* tree, int n) {
+	map<int, int> mymap;
+
 	for (int i = 0; i < n; i++) {
 		int k;
 		if (std::rand() % 10 > 5) {
@@ -152,11 +179,11 @@ void randomInsert(Tree* tree, int n) {
 		} else {
 			k = std::rand() % 1000;
 		}
-		Node* node = new Node(k);
-		int inserted = tree->inserttNode(node);
-		//cout<< i << (inserted == 1 ? "inserted " : "skipped ")<<node->key<< endl;
-		if (inserted == 0) {
-			delete node;
+
+		if (mymap.find(k) == mymap.end()) {
+			mymap.insert(pair<int,int>(k, 1));
+			tree->inserttNode(new Node(k));
+		} else {
 			i--;
 			continue;
 		}

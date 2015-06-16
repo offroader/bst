@@ -10,6 +10,7 @@ public:
 	Node* left;
 	Node* right;
 	int height;
+	int size;
 
 	Node (int key) {
 		this->key = key;
@@ -18,6 +19,7 @@ public:
 		right = NULL;
 		color = 0;
 		height = 0;
+		size = 0;
 	}
 
 	virtual ~Node() {};
