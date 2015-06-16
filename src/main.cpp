@@ -41,8 +41,8 @@ int main(int argc, char** argv) {
 }
 
 void test1(int tree_size) {
-	OST* ost = new OST();
 	Tree* rbt = new Tree();
+	OST* ost = new OST();
 
 	cout << endl << "Tree size: " << tree_size << endl;
 
@@ -65,10 +65,8 @@ void test1(int tree_size) {
 
 	cout << endl;
 
-	cout << "Root of rbt: ";
 	rbt->printRoot();
 	cout << endl;
-	cout << "Root of ost: ";
 	ost->printRoot();
 
 
@@ -155,7 +153,7 @@ void randomInsert(Tree* tree, int n) {
 			k = std::rand() % 1000;
 		}
 		Node* node = new Node(k);
-		int inserted = tree->insertNode(node);
+		int inserted = tree->inserttNode(node);
 		//cout<< i << (inserted == 1 ? "inserted " : "skipped ")<<node->key<< endl;
 		if (inserted == 0) {
 			delete node;
@@ -194,21 +192,20 @@ void randomInsert(Tree* rbt, OST* ost, int n) {
 			k = std::rand() % 1000;
 		}
 
+		cout << k << " ";
 		if (mymap.find(k) == mymap.end()) {
 			mymap.insert(pair<int,int>(k, 1));
+			cout << rbt->inserttNode(new Node(k));
+			cout << " - ";
+			cout << ost->insertNode(new OSTNode(k));
+			cout << endl;
 		} else {
 			i--;
 			continue;
 		}
 	}
 
-	map<int,int>::iterator it;
-
-	for (it=mymap.begin(); it != mymap.end(); ++it) {
-		int k = it->first;
-
-		ost->insertNode(new OSTNode(k));
-		rbt->insertNode(new Node(k));
-	}
+//	map<int,int>::iterator it;
+//	for (it=mymap.begin(); it != mymap.end(); ++it) {}
 }
 

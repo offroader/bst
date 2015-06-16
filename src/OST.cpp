@@ -193,7 +193,9 @@ public:
 	}
 
 	void printRoot () {
-		cout << "root is: " << root->key << endl;
+		if (root != NULL) {
+			cout << "OST root is: " << root->key << endl;
+		}
 	}
 
 	int count (OSTNode* node) {

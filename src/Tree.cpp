@@ -14,7 +14,7 @@ public:
 		root = NULL;
 	}
 
-	int insertNode(Node* z) {
+	int inserttNode(Node* z) {
 		Node* y = NULL;
 		Node* x = root;
 		while (x != NULL) {
@@ -281,7 +281,7 @@ public:
 			if (node != NULL) {
 				destroyTree(node->left);
 				destroyTree(node->right);
-		//		cout << "deleted node:" << node->key << endl;
+//				cout << "deleted node:" << node->key << endl;
 				delete node;
 			}
 		}
@@ -323,7 +323,9 @@ public:
 		}
 
 		void printRoot () {
-			cout << "root is: " << root->key << endl;
+			if (root != NULL) {
+				cout << "RBT root is: " << root->key << endl;
+			}
 		}
 
 		int count (Node* node) {
