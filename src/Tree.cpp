@@ -14,7 +14,7 @@ public:
 		root = NULL;
 	}
 
-	int inserttNode(Node* z) {
+	int insertNode(Node* z) {
 		Node* y = NULL;
 		Node* x = root;
 		while (x != NULL) {
@@ -157,22 +157,22 @@ public:
 	    return size;
 	}
 
-	int tree_to_vine (Node* root) {
-	   Node* vineTail = root;
+	int tree_to_vine (Node* r) {
+	   Node* vineTail = r;
 	   Node* remainder = vineTail->right;
 
 	   int size = 0;
 	   Node* tempPtr;
 	   while (remainder != NULL) {
-		   //If no leftward subtree, move rightward
-		  if ( remainder->left == NULL ) {
+		   // if no leftward subtree, move rightward
+		  if (remainder->left == NULL) {
 			 vineTail = remainder;
 			 remainder = remainder->right;
 			 size++;
 		  }
-	//    else eliminate the leftward subtree by rotations
+		  // else eliminate the leftward subtree by rotations
 		  else {
-			  /* Rightward rotation */
+			  /* rightward rotation */
 			 tempPtr = remainder->left;
 			 remainder->left = tempPtr->right;
 			 tempPtr->right = remainder;
@@ -195,7 +195,7 @@ public:
 
 	void compression(Node* root, int count) {
 		Node* scanner = root;
-		//Leftward rotation
+		// leftward rotation
 		for (int i = 0; i < count; i++) {
 			Node* child = scanner->right;
 			scanner->right = child->right;
@@ -221,137 +221,108 @@ public:
 		vine_to_tree(pseudo_root, size);
 
 		root = pseudo_root->right;
-		correctTree(root, NULL);
+		//correctTree(root, NULL);
 	}
 
 	virtual ~Tree() {};
 
 	void drawTree (Node* x) {
-			static int node_level = -1;
-		 if (x != NULL) {
-		    node_level += 1;
-		    drawTree(x->right);
-		 	for (int i = 0; i < 7 * node_level; i++) {
-		 		printf(" ");
-		 	}
-		    printf("%d \n" , x->key);
-		    drawTree(x->left);
-		    node_level -= 1;
-		   }
-		}
+		static int node_level = -1;
+		if (x != NULL) {
+			node_level += 1;
+			drawTree(x->right);
+			for (int i = 0; i < 7 * node_level; i++) {
+				printf(" ");
+			}
+			printf("%d \n" , x->key);
+			drawTree(x->left);
+			node_level -= 1;
+	   }
+	}
 
-		void draw () {
-			drawTree(root);
-		}
+	void draw () {
+		drawTree(root);
+	}
 
+	void destroy () {
+		destroyTree(root);
+	}
 
-//    void compression(Node* root, int count) {
-//        Node* scanner = root;
-//        //Leftward rotation
-//        for (int i = 0; i < count; i++) {
-//            Node* child = scanner->right;
-//            scanner->right = child->right;
-//            scanner = scanner->right;
-//            child->right = scanner->left;
-//            scanner->left = child;
-//        }
-//    }
-//
-//    int fullSize(int size) {
-//        int n = 1;
-//        while (n <= size) {
-//            n = n + n + 1;
-//        }
-//        return n / 2;
-//    }
-//
-//    void vine_to_tree(Node* root, int size) {
-//        int fullCount = fullSize(size);
-//        compression(root, size - fullCount);
-//        for (size = fullCount; size > 1; size /= 2) {
-//            compression(root, size / 2);
-//        }
-//    }
-
-		void destroy () {
-			destroyTree(root);
-		}
-
-		void destroyTree(Node* node) {
-			if (node != NULL) {
-				destroyTree(node->left);
-				destroyTree(node->right);
+	void destroyTree(Node* node) {
+		if (node != NULL) {
+			destroyTree(node->left);
+			destroyTree(node->right);
 //				cout << "deleted node:" << node->key << endl;
-				delete node;
-			}
+			delete node;
 		}
+	}
 
-		inline int Max( int l, int r) {
-			return l > r ? l : r;
+	inline int Max( int l, int r) {
+		return l > r ? l : r;
+	}
+
+	void correctTree (Node* node, Node* parent) {
+		if (node != NULL) {
+			correctTree (node->left, node);
+			correctTree (node->right, node);
+
+			node->parent = parent;
+
+			int leftHeight = node->left ? node->left->height : 0;
+			int rightHeight = node->right ? node->right->height : 0;
+
+			node->height = 1 + Max(leftHeight, rightHeight);
+	   }
+	}
+
+	void printHeight () {
+		//correctTree(root, NULL);
+		cout << "Tree height: " << root->height << endl;
+	}
+
+	void printInOrder (Node* node) {
+		if (node != NULL) {
+			printInOrder(node->left);
+			cout << node->key << endl;
+			printInOrder(node->right);
 		}
+	}
 
-		void correctTree (Node* node, Node* parent) {
-			if (node != NULL) {
-			    int LtHt, RtHt;
 
-			    correctTree (node->left, node);
-			    correctTree (node->right, node);
+	void printInOrder () {
+		printInOrder(root);
+	}
 
-			    node->parent = parent;
-			    LtHt = node->left  ? node->left->height : 0;
-			    RtHt = node->right ? node->right->height : 0;
-			    node->height = 1 + Max( LtHt, RtHt );
-		   }
+	void printRoot () {
+		if (root != NULL) {
+			cout << "RBT root is: " << root->key << endl;
 		}
+	}
 
-		void printHeight () {
-			correctTree(root, NULL);
-			cout << "Tree height: " << root->height << endl;
+	int count (Node* node) {
+		if (node == NULL) {
+			return 0;
+		} else {
+			return 1 + count(node->left) + count(node->right);
 		}
+	}
 
-		void printInOrder (Node* node) {
-			if (node != NULL) {
-				printInOrder(node->left);
-				cout << node->key << endl;
-				printInOrder(node->right);
-			}
-		}
+	void printSize () {
+		cout << "Tree size: " << count(root) << endl;
+	}
 
+	int updateSizes (Node* h) {
+	   if ( h == NULL ) return 0;
 
-		void printInOrder () {
-			printInOrder(root);
-		}
+	   int lN = updateSizes(h->left);
+	   int rN = updateSizes(h->right);
+	   h->size = 1 + lN + rN;
 
-		void printRoot () {
-			if (root != NULL) {
-				cout << "RBT root is: " << root->key << endl;
-			}
-		}
+	   return h->size;
+	}
 
-		int count (Node* node) {
-			if (node == NULL) {
-				return 0;
-			} else {
-				return 1 + count(node->left) + count(node->right);
-			}
-		}
-
-		void printSize () {
-			cout << "Tree size: " << count(root) << endl;
-		}
-
-		int updateSizes (Node* h) {
-		   if ( h == NULL ) return 0;
-
-		   int lN = updateSizes(h->left);
-		   int rN = updateSizes(h->right);
-		   h->size = 1 + lN + rN;
-
-		   return h->size;
-		}
-
-		void convertToOST () {
-			updateSizes(root);
-		}
+	void convertToOST () {
+		updateSizes(root);
+	}
 };
 

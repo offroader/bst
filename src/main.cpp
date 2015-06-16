@@ -48,18 +48,16 @@ void test (int tree_size) {
 
 	randomInsert(tree, tree_size);
 
-	cout << "Size of tree: ";
 	tree->printSize();
 	cout << endl;
 
-	cout << "Height of tree: ";
 	tree->printHeight();
-	cout << endl;
 
 	tree->printRoot();
-	cout << endl;
 
 	tree->convertToOST();
+
+	tree->printHeight();
 
 
 	tree->destroy();
@@ -182,7 +180,7 @@ void randomInsert(Tree* tree, int n) {
 
 		if (mymap.find(k) == mymap.end()) {
 			mymap.insert(pair<int,int>(k, 1));
-			tree->inserttNode(new Node(k));
+			tree->insertNode(new Node(k));
 		} else {
 			i--;
 			continue;
@@ -222,7 +220,7 @@ void randomInsert(Tree* rbt, OST* ost, int n) {
 		cout << k << " ";
 		if (mymap.find(k) == mymap.end()) {
 			mymap.insert(pair<int,int>(k, 1));
-			cout << rbt->inserttNode(new Node(k));
+			cout << rbt->insertNode(new Node(k));
 			cout << " - ";
 			cout << ost->insertNode(new OSTNode(k));
 			cout << endl;
