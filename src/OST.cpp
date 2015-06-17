@@ -209,5 +209,71 @@ public:
 	void printSize () {
 		cout << "Tree size: " << count(root) << endl;
 	}
+
+	int tree_to_vine (OSTNode* r) {
+	   OSTNode* vineTail = r;
+	   OSTNode* remainder = vineTail->right;
+
+	   int size = 0;
+	   OSTNode* tempPtr;
+	   while (remainder != NULL) {
+		   // if no leftward subtree, move rightward
+		  if (remainder->left == NULL) {
+			 vineTail = remainder;
+			 remainder = remainder->right;
+			 size++;
+		  }
+		  // else eliminate the leftward subtree by rotations
+		  else {
+			  /* rightward rotation */
+			 tempPtr = remainder->left;
+			 remainder->left = tempPtr->right;
+			 tempPtr->right = remainder;
+			 remainder = tempPtr;
+			 vineTail->right = tempPtr;
+		  }
+	   }
+
+	   return size;
+	}
+
+
+	int fullSize(int size) {
+		int n = 1;
+		while (n <= size) {
+			n = n + n + 1;
+		}
+		return n / 2;
+	}
+
+	void compression(OSTNode* root, int count) {
+		OSTNode* scanner = root;
+		// leftward rotation
+		for (int i = 0; i < count; i++) {
+			OSTNode* child = scanner->right;
+			scanner->right = child->right;
+			scanner = scanner->right;
+			child->right = scanner->left;
+			scanner->left = child;
+		}
+	}
+
+	void vine_to_tree(OSTNode* root, int size) {
+		int fullCount = fullSize(size);
+		compression(root, size - fullCount);
+		for (size = fullCount; size > 1; size /= 2) {
+			compression(root, size / 2);
+		}
+	}
+
+	void balanceDSW () {
+		OSTNode* pseudo_root = new OSTNode(-1);
+		pseudo_root->right = root;
+
+		int size = tree_to_vine(pseudo_root);
+		vine_to_tree(pseudo_root, size);
+
+		root = pseudo_root->right;
+	}
 };
 

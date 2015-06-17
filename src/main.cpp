@@ -14,6 +14,7 @@ void test(int);
 void test1(int);
 void osttest(int);
 void rbtest(int);
+void osttestDSW(int);
 void randomInsert(Tree*, int);
 void randomInsert(OST*, int);
 void randomInsert(Tree*, OST*, int);
@@ -21,22 +22,14 @@ void randomInsert(Tree*, OST*, int);
 int main(int argc, char** argv) {
 	srand (time(NULL));
 
-//	rbtest(1000);
-//	osttest(1000);
-//
-//	rbtest(10000);
-//	osttest(10000);
-//
-//	rbtest(100000);
-//	osttest(100000);
-//
-//	rbtest(1000000);
-//	osttest(1000000);
-//
 //	rbtest(10000000);
 //	osttest(10000000);
 
-	test(1000);
+	//test1(1000);
+
+	//rbtest(100000);
+	osttestDSW(1000000);
+	osttest(1000000);
 
 	return 0;
 }
@@ -49,16 +42,12 @@ void test (int tree_size) {
 	randomInsert(tree, tree_size);
 
 	tree->printSize();
-	cout << endl;
 
 	tree->printHeight();
 
 	tree->printRoot();
 
 	tree->convertToOST();
-
-	tree->printHeight();
-
 
 	tree->destroy();
 }
@@ -71,29 +60,28 @@ void test1(int tree_size) {
 
 	randomInsert(rbt, ost, tree_size);
 
-	cout << "Size of rbt: ";
 	rbt->printSize();
-	cout << endl;
-	cout << "Size of ost: ";
 	ost->printSize();
 
-	cout << endl;
-
-	cout << "Height of rbt: ";
 	rbt->printHeight();
-	cout << endl;
-	cout << "Height of ost: ";
 	ost->printHeight();
 
-
-	cout << endl;
-
 	rbt->printRoot();
-	cout << endl;
 	ost->printRoot();
 
+	cout << " balancing ... " << endl;
 
-	cout << endl;
+	rbt->balance();
+	ost->balance();
+
+	rbt->printSize();
+	ost->printSize();
+
+	rbt->printHeight();
+	ost->printHeight();
+
+	rbt->printRoot();
+	ost->printRoot();
 
 	rbt->destroy();
 	ost->destroy();
@@ -113,7 +101,7 @@ void osttest (int tree_size) {
 
 	//tree->printInOrder();
 
-	//tree->printSize();
+	tree->printSize();
 	tree->printHeight();
 	tree->printRoot();
 
@@ -133,12 +121,13 @@ void osttest (int tree_size) {
 
 }
 
+
 void rbtest (int tree_size) {
 	Tree* tree = new Tree();
 	clock_t start, finish;
 
-	cout<< endl<< "RB tree size: " << tree_size << endl;
-    tree->printSize();
+	cout<< endl<< "RBT size: " << tree_size << endl;
+	tree->printSize();
 
 	start = clock();
 	randomInsert(tree, tree_size);
@@ -147,7 +136,7 @@ void rbtest (int tree_size) {
 
 	//tree->printInOrder();
 
-	//tree->printSize();
+	tree->printSize();
 	tree->printHeight();
 	tree->printRoot();
 
@@ -164,6 +153,35 @@ void rbtest (int tree_size) {
 	tree->destroy();
 
 	cout << "Tree is destroyed" << endl << endl;
+
+}
+
+void osttestDSW (int tree_size) {
+	OST* tree = new OST();
+	clock_t start, finish;
+
+	cout<< endl<< "OST size: " << tree_size << endl;
+	tree->printSize();
+
+	start = clock();
+	randomInsert(tree, tree_size);
+	finish = clock();
+	cout << "Build time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+
+	tree->printSize();
+	tree->printHeight();
+	tree->printRoot();
+
+	start = clock();
+	tree->balanceDSW();
+	finish = clock();
+
+	tree->printHeight();
+	tree->printRoot();
+
+	cout << "Time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+
+	tree->destroy();
 
 }
 

@@ -8,10 +8,12 @@ using namespace std;
 class Tree {
 public:
     Node* root;
+    Node* maxNode;
 
 
 	Tree () {
 		root = NULL;
+		maxNode = NULL;
 	}
 
 	int insertNode(Node* z) {
@@ -35,13 +37,50 @@ public:
 		} else {
 			return 0;
 		}
-		z->left = NULL;
-		z->right = NULL;
 		z->color = 1;
 
 		insertFixup(z);
 
 		return 1;
+	}
+
+	void insertMax(Node* z) {
+		Node* y = NULL;
+		Node* x = maxNode;
+		if (x != NULL) {
+			if (z->key >= x->key) {
+				maxNode = z;
+			} else {
+				x = root;
+			}
+		} else {
+			maxNode = z;
+		}
+
+		while (x != NULL) {
+			y = x;
+			if (z->key < x->key) {
+				x = x->left;
+			} else {
+				x = x->right;
+			}
+		}
+
+		z->parent = y;
+		if (y == NULL) {
+			root = z;
+		} else {
+			if (z->key < y->key) {
+				y->left = z;
+			} else if (z->key > y->key) {
+				y->right = z;
+			} else {
+				cout << "The key: " << z->key << " has already been added!" << endl;
+				return;
+			}
+		}
+		z->color = 1;
+		insertFixup(z);
 	}
 
 	void insertFixup(Node* z) {
@@ -268,16 +307,17 @@ public:
 
 			node->parent = parent;
 
-			int leftHeight = node->left ? node->left->height : 0;
-			int rightHeight = node->right ? node->right->height : 0;
-
-			node->height = 1 + Max(leftHeight, rightHeight);
+//			int leftHeight = node->left ? node->left->height : 0;
+//			int rightHeight = node->right ? node->right->height : 0;
+//
+//			node->height = 1 + Max(leftHeight, rightHeight);
 	   }
 	}
 
 	void printHeight () {
 		//correctTree(root, NULL);
-		cout << "Tree height: " << root->height << endl;
+//		cout << "Tree height: " << root->height << endl;
+		cout << "Tree height: " << calculateHeight(root) << endl;
 	}
 
 	void printInOrder (Node* node) {
@@ -287,7 +327,6 @@ public:
 			printInOrder(node->right);
 		}
 	}
-
 
 	void printInOrder () {
 		printInOrder(root);
@@ -324,5 +363,14 @@ public:
 	void convertToOST () {
 		updateSizes(root);
 	}
+
+	int calculateHeight (Node* node) {
+		if (node == NULL) {
+			return 0;
+		} else {
+			return 1 + Max (count(node->left), count(node->right));
+		}
+	}
+
 };
 
