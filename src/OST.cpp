@@ -14,6 +14,10 @@ public:
 		root = NULL;
 	}
 
+	int insert (int key) {
+		return insertNode(new OSTNode(key));
+	}
+
 	int insertNode(OSTNode* z) {
 		OSTNode* y = NULL;
 		OSTNode* x = root;
@@ -73,37 +77,52 @@ public:
 	}
 
 	OSTNode* balanceR (OSTNode* h) {
-	   if (!h || h->size < 2) return h;
+	   if (h == NULL || h->size < 2) return h;
+
 	   h = partR (h, h->size/2);
+
 	   h->left  = balanceR (h->left);
 	   h->right = balanceR (h->right);
+
 	   return h;
 	}
 
 	OSTNode* rotR (OSTNode* h) {
-		int rNr = h->right ? h->right->size : 0,
-	       rNl = h->left->right ? h->left->right->size : 0,
-	       lN  = h->left->left  ? h->left->left->size  : 0;
-	   OSTNode* x = h->left;  h->left = x->right; x->right = h;
-	   h->size = rNr + rNl;  x->size = lN + h->size;
-	   return x;
+		int rNr = h->right ? h->right->size : 0;
+	    int rNl = h->left->right ? h->left->right->size : 0;
+	    int lN  = h->left->left  ? h->left->left->size  : 0;
+
+	    OSTNode* x = h->left;
+		h->left = x->right;
+		x->right = h;
+		h->size = rNr + rNl;
+		x->size = lN + h->size;
+
+		return x;
 	}
 
 	OSTNode* rotL (OSTNode* h) {
-		int lNl = h->left ? h->left->size : 0,
-	       lNr = h->right->left ? h->right->left->size : 0,
-	       rN  = h->right->right ? h->right->right->size : 0;
-	   OSTNode* x = h->right; h->right = x->left; x->left = h;
-	   h->size = lNl + lNr; x->size = rN + h->size;
-	   return x;
+		int lNl = h->left ? h->left->size : 0;
+	    int lNr = h->right->left ? h->right->left->size : 0;
+	    int rN  = h->right->right ? h->right->right->size : 0;
+
+	    OSTNode* x = h->right;
+	    h->right = x->left;
+	    x->left = h;
+	    h->size = lNl + lNr;
+	    x->size = rN + h->size;
+
+	    return x;
 	}
 
 	OSTNode* partR (OSTNode* h, int k) {
 	   int t = h->left ? h->left->size : 0;
+
 	   if (t > k) {
 		   h->left = partR(h->left, k);
 		   h = rotR(h);
 	   }
+
 	   if (t < k) {
 		   h->right = partR(h->right, k-t-1);
 		   h = rotL(h);
@@ -131,6 +150,7 @@ public:
 	 		printf(" ");
 	 	}
 	    printf("%d (%d)\n" , x->key, x->size);
+//	 	printf("%d\n" , x->key);
 	    drawTree(x->left);
 	    node_level -= 1;
 	   }
@@ -141,7 +161,7 @@ public:
 	}
 
 	void balance () {
-		updateSizes(root);
+		//updateSizes(root);
 		root = balanceR(root);
 	}
 
@@ -271,7 +291,13 @@ public:
 		pseudo_root->right = root;
 
 		int size = tree_to_vine(pseudo_root);
+
+//		drawTree(pseudo_root->right);
+//		cout << endl << endl;
+
 		vine_to_tree(pseudo_root, size);
+
+//		drawTree(pseudo_root->right);
 
 		root = pseudo_root->right;
 	}
@@ -376,6 +402,15 @@ public:
 	      delete Current;   // Return heap space for re-use.
 	   }
 	   Out << endl;         // Final line termination.
+	}
+
+	int height (OSTNode* h) {
+	    if (NULL == h) return -1;
+
+	    int u = height(h->left);
+	    int v = height(h->right);
+
+	    return (u < v) ? (v + 1) : (u + 1);
 	}
 
 };
