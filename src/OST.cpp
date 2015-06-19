@@ -81,6 +81,9 @@ public:
 
 	   h = partR (h, h->size/2);
 
+	   if (h) cout<< "h: " << h->key << endl;
+	   else cout << "h is null" << endl;
+
 	   h->left  = balanceR (h->left);
 	   h->right = balanceR (h->right);
 
@@ -141,6 +144,10 @@ public:
 	   return h->size;
 	}
 
+	int updateSizes () {
+		updateSizes(root);
+	}
+
 	void drawTree (OSTNode* x) {
 		static int node_level = -1;
 	 if (x != NULL) {
@@ -149,19 +156,36 @@ public:
 	 	for (int i = 0; i < 7 * node_level; i++) {
 	 		printf(" ");
 	 	}
-	    printf("%d (%d)\n" , x->key, x->size);
-//	 	printf("%d\n" , x->key);
+	 	printf("%d\n" , x->key);
 	    drawTree(x->left);
 	    node_level -= 1;
 	   }
 	}
 
+	void drawTree2 (OSTNode* x) {
+			static int node_level = -1;
+		 if (x != NULL) {
+		    node_level += 1;
+		    drawTree2(x->right);
+		 	for (int i = 0; i < 7 * node_level; i++) {
+		 		printf(" ");
+		 	}
+		    printf("%d (%d)\n" , x->key, x->size);
+	//	 	printf("%d\n" , x->key);
+		    drawTree2(x->left);
+		    node_level -= 1;
+		   }
+		}
+
 	void draw () {
 		drawTree(root);
 	}
 
+	void draw2 () {
+		drawTree2(root);
+	}
+
 	void balance () {
-		//updateSizes(root);
 		root = balanceR(root);
 	}
 
@@ -403,15 +427,69 @@ public:
 	   }
 	   Out << endl;         // Final line termination.
 	}
+//
+//	int height (OSTNode* h) {
+//	    if (NULL == h) return -1;
+//
+//	    int u = height(h->left);
+//	    int v = height(h->right);
+//
+//	    return (u < v) ? (v + 1) : (u + 1);
+//	}
+//
+//	OSTNode* balanceR ( OSTNode* h )
+//	{
+//	   if ( !h || h->util < 2 ) return h;
+//	   h = partR ( h, h->util/2);
+//	   h->left  = balanceR ( h->left );
+//	   h->right = balanceR ( h->right);
+//	   return h;
+//	}
+//
+//	OSTNode* rotR ( OSTNode* h )
+//	{  int rNr = h->right ? h->right->util : 0,
+//	       rNl = h->left->right ? h->left->right->util : 0,
+//	       lN  = h->left->left  ? h->left->left->util  : 0;
+//	   OSTNode* x = h->left;  h->left = x->right; x->right = h;
+//	   h->util = rNr + rNl;  x->util = lN + h->util;
+//	   return x;
+//	}
+//
+//	OSTNode* rotL ( OSTNode* h )
+//	{  int lNl = h->left ? h->left->util : 0,
+//	       lNr = h->right->left ? h->right->left->util : 0,
+//	       rN  = h->right->right ? h->right->right->util : 0;
+//	   OSTNode* x = h->right; h->right = x->left; x->left = h;
+//	   h->util = lNl + lNr; x->util = rN + h->util;
+//	   return x;
+//	}
+//
+//	OSTNode* partR( OSTNode* h, int k )
+//	{
+//	   int t = h->left ? h->left->util : 0;
+//	   if ( t > k )
+//	   {  h->left = partR(h->left, k); h = rotR(h); }
+//	   if ( t < k )
+//	   {  h->right = partR(h->right, k-t-1); h = rotL(h); }
+//	   return h;
+//	}
+//
+//	int SetN( OSTNode* h )
+//	{
+//	   int lN, rN;
+//
+//	   if ( h == NULL ) return 0;
+//
+//	   lN = SetN ( h->left );
+//	   rN = SetN ( h->right);
+//	   h->util = 1 + lN + rN;
+//	   return h->util;
+//	}
+//
+//	int setN () {
+//		SetN(root);
+//	}
 
-	int height (OSTNode* h) {
-	    if (NULL == h) return -1;
-
-	    int u = height(h->left);
-	    int v = height(h->right);
-
-	    return (u < v) ? (v + 1) : (u + 1);
-	}
 
 };
 

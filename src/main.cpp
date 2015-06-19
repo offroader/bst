@@ -20,78 +20,39 @@ void randomInsert(OST*, int);
 void randomInsert(Tree*, OST*, int);
 
 int main (int argc, char** argv) {
-	srand (time(NULL));
-
-	clock_t start, finish;
-	int N = 11;
-
-	map<int, int> mymap;
 	OST* ost1 = new OST();
-	OST* ost2 = new OST();
 
-	for (int i = 0; i < N; i++) {
-		int k;
-		if (std::rand() % 10 > 5) {
-			k = std::rand() % 1000000;
-		} else {
-			k = std::rand() % 1000;
-		}
+	ost1->insert(30);
+	ost1->insert(1);
+	ost1->insert(3);
+	ost1->insert(2);
+	ost1->insert(20);
+	ost1->insert(8);
+	ost1->insert(9);
+	ost1->insert(7);
+	ost1->insert(4);
+	ost1->insert(5);
+	ost1->insert(10);
 
-		if (mymap.find(k) == mymap.end()) {
-			mymap.insert(pair<int,int>(k, 1));
-			ost1->insert(k);
-			ost2->insert(k);
-		} else {
-			i--;
-			continue;
-		}
-	}
+	cout << "Sawyisi ";
+	ost1->printHeight();
+	ost1->draw2();
 
-	cout << "Sawyisi" << endl;
-	ost1->draw();
 
+	ost1->updateSizes();
+
+	cout << "Sawyisi2 ";
+	ost1->printHeight();
+	cout << endl << endl;
+	ost1->draw2();
 
 	ost1->balance();
 	cout << endl << endl;
-	cout << "Dabalansebuli" << endl;
-	ost1->draw();
-
-	ost1->updateSizes(ost1->root);
-	cout << "Sizebi" << endl;
-	cout << endl << endl;
-	ost1->draw();
-
-
-
-//	ost1->printHeight();
-//	ost1->printRoot();
-//	ost1->draw();
-//
-//	ost2->printHeight();
-//	ost2->printRoot();
-//	ost2->draw();
-//
-//	start = clock();
-//	ost1->balance();
-//	finish = clock();
-//	cout << "Sedge balancing time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
-//
-//	start = clock();
-//	ost2->balanceDSW();
-//	finish = clock();
-//	cout << "DSW balancing time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
-//
-//
-//	ost1->printHeight();
-//	ost1->printRoot();
-//	ost1->draw();
-//
-//	ost2->printHeight();
-//	ost2->printRoot();
-//	ost2->draw();
+	cout << "Dabalansebuli ";
+	ost1->printHeight();
+	ost1->draw2();
 
 	ost1->destroy();
-	ost2->destroy();
 
 	return 0;
 }
