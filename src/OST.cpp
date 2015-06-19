@@ -275,5 +275,110 @@ public:
 
 		root = pseudo_root->right;
 	}
+
+
+	// Display the BST horizontally --- based on a level-order traversal
+	void pretty(ostream &out)
+	{
+	   int skip = 0;
+
+	   if ( root == NULL )  // Nothing to display!
+	   {  cout << "Empty tree!\n"; return;  }
+
+	   setPos (root, skip); // Find line position for each node
+	   pretty (root, out);  // Level-order traversal displaying the nodes
+	}                       // one line for each level, in proper position
+
+
+	// Find line position for each node --- based on in-order traversal
+	void setPos (OSTNode* node, int &skip)
+	{
+	// If the nodes were all printed on one line, their order is based
+	// in an in-order traversal.  Skip shows number of positions to skip
+	// to properly position the node.  Note that is MUST be a reference
+	// parameter --- the root depends on the reference parameter to come
+	// back with the size of the entire left subtree, for instance.
+	   if ( node )
+	   {
+	      setPos (node->left, skip);
+	      node->util = skip;     // Store skip value in Util data member
+	      skip = skip + 2;       // Update for printing THIS node
+	      setPos(node->right, skip);
+	   }
+	}
+
+
+	// Pretty-print:  each tree level prints on one line, with the node
+	// horizontally positioned to be visually the parent of its children.
+	void pretty (OSTNode* Node, ostream &Out)
+	{//Level-order traversal requires a queue --- build a quick one here.
+	   struct Queue
+	   {
+	      OSTNode* Node;
+	      int Level;    // Change in level is where the endl prints
+	      Queue* Next;
+
+	      //Queue(OSTNode* N, int Lvl, Queue *Nxt = NULL) : Node(N), Level(Lvl), Next(Nxt) { /* nothing else */ }
+
+	      Queue (OSTNode* n, int lvl, Queue *Nxt = NULL) {
+	    	  Node = n;
+	    	  Level = lvl;
+	      }
+
+	   };
+
+	   Queue *Front = NULL, *Back;
+
+	   int Level = 0, Position = 0;
+
+	// Level-order traversal:  initialize the work queue with the root
+
+	   Front = Back = new Queue(Node, 0);  // Node initially IS the root
+
+	   while ( Front ) // Keep going till there's nothing left to do!
+	   {
+	      Queue *Add,                 // Queue pointer when we add a job
+	            *Current = Front;     // Begin the dequeue operation
+
+	      Front = Front->Next;        // Complete the dequeue operation
+
+	      Node = Current->Node;       // Node we're currently working on
+	      if (Node->left)             // Enqueue child nodes
+	      {
+	         Add = new Queue (Node->left, Current->Level+1);
+	         if ( Front )             // Begin the enqueue
+	            Back->Next = Add;
+	         else
+	            Front = Add;
+	         Back = Add;              // Finish the enqueue
+	      }
+	      if (Node->right)
+	      {
+	         Add = new Queue (Node->right, Current->Level+1);
+	         if ( Front )
+	            Back->Next = Add;
+	         else
+	            Front = Add;
+	         Back = Add;
+	      }
+	//    Check for line-break:  change in tree level
+	      if ( Current->Level != Level )
+	      {
+	         Out << endl;
+	         Position = 0;
+	         Level = Current->Level;
+	      }
+	//    Skip over to proper position
+	      for ( ; Position < Node->util ; Position++ )
+	         Out << ' ';
+	      Out << ( Node->key < 10 ? "0" : "" ) << Node->key;
+	      Position += 2;    // Update position for the output just done
+	      delete Current;   // Return heap space for re-use.
+	   }
+	   Out << endl;         // Final line termination.
+	}
+
 };
+
+
 
