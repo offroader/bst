@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
+#include <cmath>
 #include "OSTNode.cpp"
 
 using namespace std;
@@ -12,6 +13,11 @@ public:
 
 	OST () {
 		root = NULL;
+	}
+
+	inline int size(OSTNode* x) {
+		if (x == NULL) return 0;
+		return x->size;
 	}
 
 	int insert (int key) {
@@ -81,46 +87,74 @@ public:
 
 	   h = partR (h, h->size/2);
 
-	   if (h) cout<< "h: " << h->key << endl;
-	   else cout << "h is null" << endl;
-
 	   h->left  = balanceR (h->left);
 	   h->right = balanceR (h->right);
 
 	   return h;
 	}
 
-	OSTNode* rotR (OSTNode* h) {
-		int rNr = h->right ? h->right->size : 0;
-	    int rNl = h->left->right ? h->left->right->size : 0;
-	    int lN  = h->left->left  ? h->left->left->size  : 0;
+	void newBalance () {
+		root = balance(root);
+	}
 
+	void balance () {
+		root = balanceR(root);
+	}
+
+	OSTNode* balance (OSTNode* x) {
+	   if (x == NULL || x->size < 2) return x;
+
+	   int h = (int)log2(x->size);
+
+	   if (x->size <= 3 * (int)pow(2, h-1) - 1 ) {
+
+//		   cout << h->size << " - " << k << endl;
+//		   cout << "1) "<< x ->size << " - " << x->size - (int)pow(2, h-1) + 1 << endl;
+		   x = partR(x, x->size - (int)pow(2, h-1) + 1 - 1);
+
+		   x-> left = balanceR(x->left);
+		   x->right = balance(x->right);
+
+	   } else {
+//		   cout << "2) " << x->size << " - " << (int)pow(2, h) << endl;
+		   x = partR(x, (int)pow(2, h) - 1);
+
+		   x-> left = balance(x->left);
+		   x->right = balanceR(x->right);
+	   }
+
+	   return x;
+	}
+
+
+
+	OSTNode* rotR (OSTNode* h) {
 	    OSTNode* x = h->left;
 		h->left = x->right;
 		x->right = h;
-		h->size = rNr + rNl;
-		x->size = lN + h->size;
+
+		h->size = size(h->left) + size(h->right) + 1;
+		x->size = size(x->left) + size(x->right) + 1;
 
 		return x;
 	}
 
 	OSTNode* rotL (OSTNode* h) {
-		int lNl = h->left ? h->left->size : 0;
-	    int lNr = h->right->left ? h->right->left->size : 0;
-	    int rN  = h->right->right ? h->right->right->size : 0;
-
 	    OSTNode* x = h->right;
 	    h->right = x->left;
 	    x->left = h;
-	    h->size = lNl + lNr;
-	    x->size = rN + h->size;
+
+	    h->size = size(h->left) + size(h->right) + 1;
+		x->size = size(x->left) + size(x->right) + 1;
 
 	    return x;
 	}
 
 	OSTNode* partR (OSTNode* h, int k) {
-	   int t = h->left ? h->left->size : 0;
 
+	   int t = size(h->left);
+
+//	   cout<< t << " " << k <<endl;
 	   if (t > k) {
 		   h->left = partR(h->left, k);
 		   h = rotR(h);
@@ -183,10 +217,6 @@ public:
 
 	void draw2 () {
 		drawTree2(root);
-	}
-
-	void balance () {
-		root = balanceR(root);
 	}
 
 	void destroy () {
@@ -492,6 +522,5 @@ public:
 
 
 };
-
 
 
