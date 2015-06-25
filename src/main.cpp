@@ -11,40 +11,22 @@
 
 using namespace std;
 
-void newBalanceTest();
-void test3(int);
-void test(int);
-void test1(int);
-void osttest(int);
-void rbtest(int);
-void osttestDSW(int);
-void randomInsert(Tree*, int);
-void randomInsert(OST*, int);
+void test_ostDSW_ostSED_ostMod(int);
+void test_rbt_ost(int);
 void randomInsert(Tree*, OST*, int);
 
-void buildTree (OST* ost) {
-	ost->insert(30);
-	ost->insert(1);
-	ost->insert(3);
-	ost->insert(2);
-	ost->insert(20);
-	ost->insert(8);
-	ost->insert(9);
-	ost->insert(7);
-	ost->insert(4);
-	ost->insert(5);
-	ost->insert(10);
-}
-
-void test3 (int n) {
+void test_ostDSW_ostSED_ostMod (int N) {
 	srand (time(NULL));
 
-	cout << endl<< "N:" << n << endl;
+	cout << endl<< "N:" << N << endl;
+
 	map<int, int> mymap;
+
 	OST* ost1 = new OST();
 	OST* ost2 = new OST();
+	OST* ost3 = new OST();
 
-	for (int i = 0; i < n; i++) {
+	for (int i = 0; i < N; i++) {
 		int k;
 		if (std::rand() % 10 > 5) {
 			k = std::rand() % 1000000000;
@@ -56,6 +38,7 @@ void test3 (int n) {
 			mymap.insert(pair<int,int>(k, 1));
 			ost1->insert(k);
 			ost2->insert(k);
+			ost3->insert(k);
 		} else {
 			i--;
 			continue;
@@ -64,106 +47,45 @@ void test3 (int n) {
 
 	clock_t start, finish;
 
+	cout << "Initial: " << endl;
+	ost1->printHeight();
+	ost2->printHeight();
+	ost3->printHeight();
 
-		cout << endl << endl;
+	cout << endl;
 
-		cout << "Sawyisi 1:";
-		ost1->printHeight();
+	start = clock();
+	ost1->balanceDSW();
+	finish = clock();
+	cout << "DSW balancing time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+	ost1->printHeight();
 
-		cout << "Sawyisi 2:";
-		ost2->printHeight();
+	start = clock();
+	ost2->balance();
+	finish = clock();
+	cout << "Sed. balancing time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+	ost2->printHeight();
 
+	start = clock();
+	ost3->balanceM();
+	finish = clock();
+	cout << "Modified Sed. balancing time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+	ost3->printHeight();
 
-		cout << endl << endl;
-
-		start = clock();
-		ost1->balance();
-		finish = clock();
-		cout << "Balance time: " << ((double) (finish - start)) / 10000 << " ms" << endl;
-
-		start = clock();
-		ost2->balanceDSW();
-		finish = clock();
-		cout << "DSW balance time: " << ((double) (finish - start)) / 10000 << " ms" << endl;
-
-
-		ost1->printHeight();
-
-		ost2->printHeight();
-
-
-		ost1->destroy();
-		ost2->destroy();
-
-
-
-
-
+	ost1->destroy();
+	ost2->destroy();
+	ost3->destroy();
 }
 
 int main (int argc, char** argv) {
-	test3(1000);
-	test3(1000000);
-	test3(10000000);
-	return 0;
+	test_ostDSW_ostSED_ostMod(1000);
+	test_ostDSW_ostSED_ostMod(10000);
+	test_ostDSW_ostSED_ostMod(100000);
+//	test_ostDSW_and_ostSED(1000000);
+//	test_ostDSW_and_ostSED(10000000);
 }
 
-void newBalanceTest () {
-	OST* ost1 = new OST();
-		OST* ost2 = new OST();
-
-		buildTree(ost1);
-		buildTree(ost2);
-	//
-	//	cout << "Sawyisi 1:";
-	//	ost1->printHeight();
-	//	ost1->draw2();
-
-		cout << "Sawyisi 2:";
-		ost2->printHeight();
-		ost2->draw2();
-
-
-		cout << endl << endl;
-
-		ost1->balance();
-		cout << endl << endl;
-		ost2->newBalance();
-
-	//	ost2->root = ost2->partR(ost2->root, 7);
-
-		cout << "Dabalansebuli 1:";
-		ost1->printHeight();
-		ost1->draw2();
-
-		cout << "Dabalansebuli 2:";
-		ost2->printHeight();
-		ost2->draw2();
-
-
-		ost1->destroy();
-		ost2->destroy();
-
-}
-
-void test (int tree_size) {
-	Tree* tree = new Tree();
-	cout << endl << "Tree size: " << tree_size << endl;
-
-	randomInsert(tree, tree_size);
-
-	tree->printSize();
-
-	tree->printHeight();
-
-	tree->printRoot();
-
-	tree->convertToOST();
-
-	tree->destroy();
-}
-
-void test1(int tree_size) {
+void test_rbt_ost (int tree_size) {
 	Tree* rbt = new Tree();
 	OST* ost = new OST();
 
@@ -198,143 +120,6 @@ void test1(int tree_size) {
 	ost->destroy();
 }
 
-void osttest (int tree_size) {
-	OST* tree = new OST();
-	clock_t start, finish;
-
-	cout<< endl<< "OST tree size: " << tree_size << endl;
-    tree->printSize();
-
-	start = clock();
-	randomInsert(tree, tree_size);
-	finish = clock();
-	cout << "Build time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
-
-	//tree->printInOrder();
-
-	tree->printSize();
-	tree->printHeight();
-	tree->printRoot();
-
-	start = clock();
-	tree->balance();
-	finish = clock();
-
-	//tree->printSize();
-	tree->printHeight();
-	tree->printRoot();
-
-	cout << "Time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
-
-	tree->destroy();
-
-	cout << "Tree is destroyed" << endl << endl;
-
-}
-
-
-void rbtest (int tree_size) {
-	Tree* tree = new Tree();
-	clock_t start, finish;
-
-	cout<< endl<< "RBT size: " << tree_size << endl;
-	tree->printSize();
-
-	start = clock();
-	randomInsert(tree, tree_size);
-	finish = clock();
-	cout << "Build time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
-
-	//tree->printInOrder();
-
-	tree->printSize();
-	tree->printHeight();
-	tree->printRoot();
-
-	start = clock();
-	tree->balance();
-	finish = clock();
-
-	//tree->printSize();
-	tree->printHeight();
-	tree->printRoot();
-
-	cout << "Time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
-
-	tree->destroy();
-
-	cout << "Tree is destroyed" << endl << endl;
-
-}
-
-void osttestDSW (int tree_size) {
-	OST* tree = new OST();
-	clock_t start, finish;
-
-	cout<< endl<< "OST size: " << tree_size << endl;
-	tree->printSize();
-
-	start = clock();
-	randomInsert(tree, tree_size);
-	finish = clock();
-	cout << "Build time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
-
-	tree->printSize();
-	tree->printHeight();
-	tree->printRoot();
-
-	start = clock();
-	tree->balanceDSW();
-	finish = clock();
-
-	tree->printHeight();
-	tree->printRoot();
-
-	cout << "Time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
-
-	tree->destroy();
-
-}
-
-void randomInsert(Tree* tree, int n) {
-	map<int, int> mymap;
-
-	for (int i = 0; i < n; i++) {
-		int k;
-		if (std::rand() % 10 > 5) {
-			k = std::rand() % 100000000;
-		} else {
-			k = std::rand() % 1000;
-		}
-
-		if (mymap.find(k) == mymap.end()) {
-			mymap.insert(pair<int,int>(k, 1));
-//			tree->insertNode(new Node(k));
-		} else {
-			i--;
-			continue;
-		}
-	}
-}
-
-void randomInsert(OST* tree, int n) {
-	for (int i = 0; i < n; i++) {
-		int k;
-		if (std::rand() % 10 > 5) {
-			k = std::rand() % 100000000;
-		} else {
-			k = std::rand() % 1000;
-		}
-		OSTNode* node = new OSTNode(k);
-		int inserted = tree->insertNode(node);
-		if (inserted == 0) {
-			delete node;
-			i--;
-			continue;
-		}
-	}
-}
-
 void randomInsert(Tree* rbt, OST* ost, int n) {
 	map<int, int> mymap;
 
@@ -349,7 +134,7 @@ void randomInsert(Tree* rbt, OST* ost, int n) {
 		cout << k << " ";
 		if (mymap.find(k) == mymap.end()) {
 			mymap.insert(pair<int,int>(k, 1));
-//			cout << rbt->insertNode(new Node(k));
+			cout << rbt->insertNode(new Node(k));
 			cout << " - ";
 			cout << ost->insertNode(new OSTNode(k));
 			cout << endl;
@@ -358,7 +143,20 @@ void randomInsert(Tree* rbt, OST* ost, int n) {
 			continue;
 		}
 	}
-
-//	map<int,int>::iterator it;
-//	for (it=mymap.begin(); it != mymap.end(); ++it) {}
 }
+
+
+void buildSimpleOST (OST* ost) {
+	ost->insert(30);
+	ost->insert(1);
+	ost->insert(3);
+	ost->insert(2);
+	ost->insert(20);
+	ost->insert(8);
+	ost->insert(9);
+	ost->insert(7);
+	ost->insert(4);
+	ost->insert(5);
+	ost->insert(10);
+}
+

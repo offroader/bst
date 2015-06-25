@@ -9,7 +9,6 @@ public:
 	Node* parent;
 	Node* left;
 	Node* right;
-	//int height;
 	int size;
 
 	Node (int key) {

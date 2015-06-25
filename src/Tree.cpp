@@ -19,6 +19,7 @@ public:
 	int insertNode(Node* z) {
 		Node* y = NULL;
 		Node* x = root;
+
 		while (x != NULL) {
 			y = x;
 			if (z->key < x->key) {
@@ -167,35 +168,6 @@ public:
 		x->parent = y;
 	}
 
-	int tree_to_vine2(Node* root) {
-	    Node* vineTail = new Node(-1);
-	    vineTail->right = root;
-	    Node* remainder = vineTail->right;
-
-	    root = vineTail;
-
-	    Node* tempPtr;
-	    int size = 0;
-	    while (remainder != NULL) {
-	        if (remainder->left == NULL) {
-	            vineTail = remainder;
-	            remainder = remainder->right;
-	            size++;
-	        } else {
-	            // Rightward rotation
-	            tempPtr = remainder->left;
-	            remainder->left = tempPtr->right;
-	            tempPtr->right = remainder;
-	            remainder = tempPtr;
-	            vineTail->right = tempPtr;
-	        }
-	    }
-
-	    root = root->right;
-
-	    return size;
-	}
-
 	int tree_to_vine (Node* r) {
 	   Node* vineTail = r;
 	   Node* remainder = vineTail->right;
@@ -211,7 +183,7 @@ public:
 		  }
 		  // else eliminate the leftward subtree by rotations
 		  else {
-			  /* rightward rotation */
+			  // rightward rotation
 			 tempPtr = remainder->left;
 			 remainder->left = tempPtr->right;
 			 tempPtr->right = remainder;
@@ -260,7 +232,6 @@ public:
 		vine_to_tree(pseudo_root, size);
 
 		root = pseudo_root->right;
-		//correctTree(root, NULL);
 	}
 
 	virtual ~Tree() {};
@@ -291,7 +262,6 @@ public:
 		if (node != NULL) {
 			destroyTree(node->left);
 			destroyTree(node->right);
-//				cout << "deleted node:" << node->key << endl;
 			delete node;
 		}
 	}
@@ -300,23 +270,7 @@ public:
 		return l > r ? l : r;
 	}
 
-	void correctTree (Node* node, Node* parent) {
-		if (node != NULL) {
-			correctTree (node->left, node);
-			correctTree (node->right, node);
-
-			node->parent = parent;
-
-//			int leftHeight = node->left ? node->left->height : 0;
-//			int rightHeight = node->right ? node->right->height : 0;
-//
-//			node->height = 1 + Max(leftHeight, rightHeight);
-	   }
-	}
-
 	void printHeight () {
-		//correctTree(root, NULL);
-//		cout << "Tree height: " << root->height << endl;
 		cout << "Tree height: " << calculateHeight(root) << endl;
 	}
 
@@ -355,9 +309,9 @@ public:
 
 	   int lN = updateSizes(h->left);
 	   int rN = updateSizes(h->right);
-	   h->size = 1 + lN + rN;
+	   h->color = 1 + lN + rN;
 
-	   return h->size;
+	   return h->color;
 	}
 
 	void convertToOST () {

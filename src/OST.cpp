@@ -10,23 +10,14 @@ class OST {
 public:
     OSTNode* root;
 
-
 	OST () {
 		root = NULL;
-	}
-
-	inline int size(OSTNode* x) {
-		if (x == NULL) return 0;
-		return x->size;
-	}
-
-	int insert (int key) {
-		return insertNode(new OSTNode(key));
 	}
 
 	int insertNode(OSTNode* z) {
 		OSTNode* y = NULL;
 		OSTNode* x = root;
+
 		while (x != NULL) {
 			y = x;
 			if (z->key == x->key) {
@@ -39,6 +30,7 @@ public:
 				x = x->right;
 			}
 		}
+
 		z->parent = y;
 		if (y == NULL) {
 			root = z;
@@ -49,11 +41,16 @@ public:
 		} else {
 			return 0;
 		}
+
 		z->left = NULL;
 		z->right = NULL;
 		z->size = 1;
 
 		return 1;
+	}
+
+	int insert (int key) {
+		return insertNode(new OSTNode(key));
 	}
 
 	OSTNode* select (OSTNode* x, int i) {
@@ -82,6 +79,11 @@ public:
 		return r;
 	}
 
+	inline int size (OSTNode* x) {
+		if (x == NULL) return 0;
+		return x->size;
+	}
+
 	OSTNode* balanceR (OSTNode* h) {
 	   if (h == NULL || h->size < 2) return h;
 
@@ -93,40 +95,27 @@ public:
 	   return h;
 	}
 
-	void newBalance () {
-		root = balance(root);
-	}
-
-	void balance () {
-		root = balanceR(root);
-	}
-
-	OSTNode* balance (OSTNode* x) {
+	OSTNode* balanceM (OSTNode* x) {
 	   if (x == NULL || x->size < 2) return x;
 
 	   int h = (int)log2(x->size);
 
 	   if (x->size <= 3 * (int)pow(2, h-1) - 1 ) {
 
-//		   cout << h->size << " - " << k << endl;
-//		   cout << "1) "<< x ->size << " - " << x->size - (int)pow(2, h-1) + 1 << endl;
 		   x = partR(x, x->size - (int)pow(2, h-1) + 1 - 1);
 
 		   x-> left = balanceR(x->left);
-		   x->right = balance(x->right);
-
+		   x->right = balanceM(x->right);
 	   } else {
-//		   cout << "2) " << x->size << " - " << (int)pow(2, h) << endl;
+
 		   x = partR(x, (int)pow(2, h) - 1);
 
-		   x-> left = balance(x->left);
+		   x-> left = balanceM(x->left);
 		   x->right = balanceR(x->right);
 	   }
 
 	   return x;
 	}
-
-
 
 	OSTNode* rotR (OSTNode* h) {
 	    OSTNode* x = h->left;
@@ -154,7 +143,6 @@ public:
 
 	   int t = size(h->left);
 
-//	   cout<< t << " " << k <<endl;
 	   if (t > k) {
 		   h->left = partR(h->left, k);
 		   h = rotR(h);
@@ -168,18 +156,12 @@ public:
 	   return h;
 	}
 
-	int updateSizes (OSTNode* h) {
-	   if ( h == NULL ) return 0;
-
-	   int lN = updateSizes(h->left);
-	   int rN = updateSizes(h->right);
-	   h->size = 1 + lN + rN;
-
-	   return h->size;
+	void balanceM () {
+		root = balanceM(root);
 	}
 
-	int updateSizes () {
-		updateSizes(root);
+	void balance () {
+		root = balanceR(root);
 	}
 
 	void drawTree (OSTNode* x) {
@@ -190,33 +172,14 @@ public:
 	 	for (int i = 0; i < 7 * node_level; i++) {
 	 		printf(" ");
 	 	}
-	 	printf("%d\n" , x->key);
+		printf("%d (%d)\n" , x->key, x->size);
 	    drawTree(x->left);
 	    node_level -= 1;
 	   }
 	}
 
-	void drawTree2 (OSTNode* x) {
-			static int node_level = -1;
-		 if (x != NULL) {
-		    node_level += 1;
-		    drawTree2(x->right);
-		 	for (int i = 0; i < 7 * node_level; i++) {
-		 		printf(" ");
-		 	}
-		    printf("%d (%d)\n" , x->key, x->size);
-	//	 	printf("%d\n" , x->key);
-		    drawTree2(x->left);
-		    node_level -= 1;
-		   }
-		}
-
 	void draw () {
 		drawTree(root);
-	}
-
-	void draw2 () {
-		drawTree2(root);
 	}
 
 	void destroy () {
@@ -225,22 +188,20 @@ public:
 
 	void destroyTree(OSTNode* node) {
 		if (node != NULL) {
+
 			if (node->left != NULL) {
 				destroyTree(node->left);
 			}
+
 			if (node->right != NULL) {
 				destroyTree(node->right);
 			}
-	//		cout << "deleted node:" << node->key << endl;
+
 			delete node;
 		}
 	}
 
 	virtual ~OST() {};
-
-	inline int Max (int l, int r) {
-		return l > r ? l : r;
-	}
 
 	int calculateHeight (OSTNode* node) {
 		if (node != NULL) {
@@ -260,7 +221,6 @@ public:
 			printInOrder(node->right);
 		}
 	}
-
 
 	void printInOrder () {
 		printInOrder(root);
@@ -311,6 +271,9 @@ public:
 	   return size;
 	}
 
+	inline int Max (int l, int r) {
+		return l > r ? l : r;
+	}
 
 	int fullSize(int size) {
 		int n = 1;
@@ -355,172 +318,4 @@ public:
 
 		root = pseudo_root->right;
 	}
-
-
-	// Display the BST horizontally --- based on a level-order traversal
-	void pretty(ostream &out)
-	{
-	   int skip = 0;
-
-	   if ( root == NULL )  // Nothing to display!
-	   {  cout << "Empty tree!\n"; return;  }
-
-	   setPos (root, skip); // Find line position for each node
-	   pretty (root, out);  // Level-order traversal displaying the nodes
-	}                       // one line for each level, in proper position
-
-
-	// Find line position for each node --- based on in-order traversal
-	void setPos (OSTNode* node, int &skip)
-	{
-	// If the nodes were all printed on one line, their order is based
-	// in an in-order traversal.  Skip shows number of positions to skip
-	// to properly position the node.  Note that is MUST be a reference
-	// parameter --- the root depends on the reference parameter to come
-	// back with the size of the entire left subtree, for instance.
-	   if ( node )
-	   {
-	      setPos (node->left, skip);
-	      node->util = skip;     // Store skip value in Util data member
-	      skip = skip + 2;       // Update for printing THIS node
-	      setPos(node->right, skip);
-	   }
-	}
-
-
-	// Pretty-print:  each tree level prints on one line, with the node
-	// horizontally positioned to be visually the parent of its children.
-	void pretty (OSTNode* Node, ostream &Out)
-	{//Level-order traversal requires a queue --- build a quick one here.
-	   struct Queue
-	   {
-	      OSTNode* Node;
-	      int Level;    // Change in level is where the endl prints
-	      Queue* Next;
-
-	      //Queue(OSTNode* N, int Lvl, Queue *Nxt = NULL) : Node(N), Level(Lvl), Next(Nxt) { /* nothing else */ }
-
-	      Queue (OSTNode* n, int lvl, Queue *Nxt = NULL) {
-	    	  Node = n;
-	    	  Level = lvl;
-	      }
-
-	   };
-
-	   Queue *Front = NULL, *Back;
-
-	   int Level = 0, Position = 0;
-
-	// Level-order traversal:  initialize the work queue with the root
-
-	   Front = Back = new Queue(Node, 0);  // Node initially IS the root
-
-	   while ( Front ) // Keep going till there's nothing left to do!
-	   {
-	      Queue *Add,                 // Queue pointer when we add a job
-	            *Current = Front;     // Begin the dequeue operation
-
-	      Front = Front->Next;        // Complete the dequeue operation
-
-	      Node = Current->Node;       // Node we're currently working on
-	      if (Node->left)             // Enqueue child nodes
-	      {
-	         Add = new Queue (Node->left, Current->Level+1);
-	         if ( Front )             // Begin the enqueue
-	            Back->Next = Add;
-	         else
-	            Front = Add;
-	         Back = Add;              // Finish the enqueue
-	      }
-	      if (Node->right)
-	      {
-	         Add = new Queue (Node->right, Current->Level+1);
-	         if ( Front )
-	            Back->Next = Add;
-	         else
-	            Front = Add;
-	         Back = Add;
-	      }
-	//    Check for line-break:  change in tree level
-	      if ( Current->Level != Level )
-	      {
-	         Out << endl;
-	         Position = 0;
-	         Level = Current->Level;
-	      }
-	//    Skip over to proper position
-	      for ( ; Position < Node->util ; Position++ )
-	         Out << ' ';
-	      Out << ( Node->key < 10 ? "0" : "" ) << Node->key;
-	      Position += 2;    // Update position for the output just done
-	      delete Current;   // Return heap space for re-use.
-	   }
-	   Out << endl;         // Final line termination.
-	}
-//
-//	int height (OSTNode* h) {
-//	    if (NULL == h) return -1;
-//
-//	    int u = height(h->left);
-//	    int v = height(h->right);
-//
-//	    return (u < v) ? (v + 1) : (u + 1);
-//	}
-//
-//	OSTNode* balanceR ( OSTNode* h )
-//	{
-//	   if ( !h || h->util < 2 ) return h;
-//	   h = partR ( h, h->util/2);
-//	   h->left  = balanceR ( h->left );
-//	   h->right = balanceR ( h->right);
-//	   return h;
-//	}
-//
-//	OSTNode* rotR ( OSTNode* h )
-//	{  int rNr = h->right ? h->right->util : 0,
-//	       rNl = h->left->right ? h->left->right->util : 0,
-//	       lN  = h->left->left  ? h->left->left->util  : 0;
-//	   OSTNode* x = h->left;  h->left = x->right; x->right = h;
-//	   h->util = rNr + rNl;  x->util = lN + h->util;
-//	   return x;
-//	}
-//
-//	OSTNode* rotL ( OSTNode* h )
-//	{  int lNl = h->left ? h->left->util : 0,
-//	       lNr = h->right->left ? h->right->left->util : 0,
-//	       rN  = h->right->right ? h->right->right->util : 0;
-//	   OSTNode* x = h->right; h->right = x->left; x->left = h;
-//	   h->util = lNl + lNr; x->util = rN + h->util;
-//	   return x;
-//	}
-//
-//	OSTNode* partR( OSTNode* h, int k )
-//	{
-//	   int t = h->left ? h->left->util : 0;
-//	   if ( t > k )
-//	   {  h->left = partR(h->left, k); h = rotR(h); }
-//	   if ( t < k )
-//	   {  h->right = partR(h->right, k-t-1); h = rotL(h); }
-//	   return h;
-//	}
-//
-//	int SetN( OSTNode* h )
-//	{
-//	   int lN, rN;
-//
-//	   if ( h == NULL ) return 0;
-//
-//	   lN = SetN ( h->left );
-//	   rN = SetN ( h->right);
-//	   h->util = 1 + lN + rN;
-//	   return h->util;
-//	}
-//
-//	int setN () {
-//		SetN(root);
-//	}
-
-
 };
-
-
