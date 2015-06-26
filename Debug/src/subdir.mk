@@ -7,6 +7,8 @@ CPP_SRCS += \
 ../src/Node.cpp \
 ../src/OST.cpp \
 ../src/OSTNode.cpp \
+../src/RBT.cpp \
+../src/RBTNode.cpp \
 ../src/Tree.cpp \
 ../src/main.cpp 
 
@@ -14,6 +16,8 @@ OBJS += \
 ./src/Node.o \
 ./src/OST.o \
 ./src/OSTNode.o \
+./src/RBT.o \
+./src/RBTNode.o \
 ./src/Tree.o \
 ./src/main.o 
 
@@ -21,6 +25,8 @@ CPP_DEPS += \
 ./src/Node.d \
 ./src/OST.d \
 ./src/OSTNode.d \
+./src/RBT.d \
+./src/RBTNode.d \
 ./src/Tree.d \
 ./src/main.d 
 

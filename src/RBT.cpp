@@ -1,21 +1,24 @@
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
-#include "Node.cpp"
+#include "RBTNode.cpp"
 
 using namespace std;
 
-class Tree {
+class RBT {
 public:
-    Node* root;
+    RBTNode* root;
+    RBTNode* maxNode;
 
-	Tree () {
+
+    RBT () {
 		root = NULL;
+		maxNode = NULL;
 	}
 
-	int insertNode(Node* z) {
-		Node* y = NULL;
-		Node* x = root;
+	int insertNode(RBTNode* z) {
+		RBTNode* y = NULL;
+		RBTNode* x = root;
 
 		while (x != NULL) {
 			y = x;
@@ -42,10 +45,53 @@ public:
 		return 1;
 	}
 
-	void insertFixup(Node* z) {
+	int insert (int key) {
+		return insertNode(new RBTNode(key));
+	}
+
+	void insertMax(RBTNode* z) {
+		RBTNode* y = NULL;
+		RBTNode* x = maxNode;
+		if (x != NULL) {
+			if (z->key >= x->key) {
+				maxNode = z;
+			} else {
+				x = root;
+			}
+		} else {
+			maxNode = z;
+		}
+
+		while (x != NULL) {
+			y = x;
+			if (z->key < x->key) {
+				x = x->left;
+			} else {
+				x = x->right;
+			}
+		}
+
+		z->parent = y;
+		if (y == NULL) {
+			root = z;
+		} else {
+			if (z->key < y->key) {
+				y->left = z;
+			} else if (z->key > y->key) {
+				y->right = z;
+			} else {
+				cout << "The key: " << z->key << " has already been added!" << endl;
+				return;
+			}
+		}
+		z->color = 1;
+		insertFixup(z);
+	}
+
+	void insertFixup(RBTNode* z) {
 		while (z->parent != NULL && z->parent->color == 1) {
 			if (z->parent == z->parent->parent->left) {
-				Node* y = z->parent->parent->right;
+				RBTNode* y = z->parent->parent->right;
 				if (y != NULL && y->color == 1) {
 					z->parent->color = 0;
 					y->color = 0;
@@ -66,7 +112,7 @@ public:
 					}
 				}
 			} else {
-				Node* y = z->parent->parent->left;
+				RBTNode* y = z->parent->parent->left;
 				if (y != NULL && y->color == 1) {
 					z->parent->color = 0;
 					y->color = 0;
@@ -90,16 +136,13 @@ public:
 		root->color = 0;
 	}
 
-	void rotateLeft(Node* x) {
-		Node* y = x->right;
+	void rotateLeft(RBTNode* x) {
+		RBTNode* y = x->right;
 		x->right = y->left;
-
 		if (y->left != NULL) {
 			y->left->parent = x;
 		}
-
 		y->parent = x->parent;
-
 		if (x->parent == NULL) {
 			root = y;
 		} else if (x == x->parent->left) {
@@ -107,21 +150,17 @@ public:
 		} else {
 			x->parent->right = y;
 		}
-
 		y->left = (x);
 		x->parent = y;
 	}
 
-	void rotateRight(Node* x) {
-		Node* y = x->left;
+	void rotateRight(RBTNode* x) {
+		RBTNode* y = x->left;
 		x->left = (y->right);
-
 		if (y->right != NULL) {
 			y->right->parent = x;
 		}
-
 		y->parent = x->parent;
-
 		if (x->parent == NULL) {
 			root = y;
 		} else if (x == x->parent->left) {
@@ -129,19 +168,18 @@ public:
 		} else {
 			x->parent->right = y;
 		}
-
 		y->right = x;
 		x->parent = y;
 	}
 
-	int tree_to_vine (Node* r) {
-	   Node* vineTail = r;
-	   Node* remainder = vineTail->right;
+	int tree_to_vine (RBTNode* r) {
+	   RBTNode* vineTail = r;
+	   RBTNode* remainder = vineTail->right;
 
 	   int size = 0;
-	   Node* tempPtr;
+	   RBTNode* tempPtr;
 	   while (remainder != NULL) {
-		  // if no leftward subtree, move rightward
+		   // if no leftward subtree, move rightward
 		  if (remainder->left == NULL) {
 			 vineTail = remainder;
 			 remainder = remainder->right;
@@ -170,11 +208,11 @@ public:
 		return n / 2;
 	}
 
-	void compression(Node* root, int count) {
-		Node* scanner = root;
+	void compression(RBTNode* root, int count) {
+		RBTNode* scanner = root;
 		// leftward rotation
 		for (int i = 0; i < count; i++) {
-			Node* child = scanner->right;
+			RBTNode* child = scanner->right;
 			scanner->right = child->right;
 			scanner = scanner->right;
 			child->right = scanner->left;
@@ -182,7 +220,7 @@ public:
 		}
 	}
 
-	void vine_to_tree(Node* root, int size) {
+	void vine_to_tree(RBTNode* root, int size) {
 		int fullCount = fullSize(size);
 		compression(root, size - fullCount);
 		for (size = fullCount; size > 1; size /= 2) {
@@ -191,7 +229,7 @@ public:
 	}
 
 	void balance () {
-		Node* pseudo_root = new Node(-1);
+		RBTNode* pseudo_root = new RBTNode(-1);
 		pseudo_root->right = root;
 
 		int size = tree_to_vine(pseudo_root);
@@ -200,9 +238,9 @@ public:
 		root = pseudo_root->right;
 	}
 
-	virtual ~Tree() {};
+	virtual ~RBT() {};
 
-	void drawTree (Node* x) {
+	void drawTree (RBTNode* x) {
 		static int node_level = -1;
 		if (x != NULL) {
 			node_level += 1;
@@ -224,7 +262,7 @@ public:
 		destroyTree(root);
 	}
 
-	void destroyTree(Node* node) {
+	void destroyTree(RBTNode* node) {
 		if (node != NULL) {
 			destroyTree(node->left);
 			destroyTree(node->right);
@@ -240,7 +278,7 @@ public:
 		cout << "Tree height: " << calculateHeight(root) << endl;
 	}
 
-	void printInOrder (Node* node) {
+	void printInOrder (RBTNode* node) {
 		if (node != NULL) {
 			printInOrder(node->left);
 			cout << node->key << endl;
@@ -258,7 +296,7 @@ public:
 		}
 	}
 
-	int count (Node* node) {
+	int count (RBTNode* node) {
 		if (node == NULL) {
 			return 0;
 		} else {
@@ -270,7 +308,7 @@ public:
 		cout << "Tree size: " << count(root) << endl;
 	}
 
-	int updateSizes (Node* h) {
+	int updateSizes (RBTNode* h) {
 	   if ( h == NULL ) return 0;
 
 	   int lN = updateSizes(h->left);
@@ -284,7 +322,7 @@ public:
 		updateSizes(root);
 	}
 
-	int calculateHeight (Node* node) {
+	int calculateHeight (RBTNode* node) {
 		if (node == NULL) {
 			return 0;
 		} else {

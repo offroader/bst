@@ -2,16 +2,16 @@
 
 using namespace std;
 
-class Node {
+class RBTNode {
 public:
 	int key;
 	int color;
-	Node* parent;
-	Node* left;
-	Node* right;
+	RBTNode* parent;
+	RBTNode* left;
+	RBTNode* right;
 	int size;
 
-	Node (int key) {
+	RBTNode (int key) {
 		this->key = key;
 		parent = NULL;
 		left = NULL;
@@ -20,7 +20,7 @@ public:
 		size = 0;
 	}
 
-	virtual ~Node() {};
+	virtual ~RBTNode() {};
 };
 
 
