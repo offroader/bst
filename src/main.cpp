@@ -15,19 +15,23 @@ using namespace std;
 void test_ostDSW_ostSED_ostMod(int);
 void test_build_rbt_ost(int);
 void randomInsert(RBT*, OST*, int);
+void test_my_tree(int);
 
 int main (int argc, char** argv) {
-
-	test_build_rbt_ost(100);
-
-//	test_ostDSW_ostSED_ostMod(1000);
-//	test_ostDSW_ostSED_ostMod(10000);
-//	test_ostDSW_ostSED_ostMod(100000);
-//	test_ostDSW_and_ostSED(1000000);
-//	test_ostDSW_and_ostSED(10000000);
+	int n = 1000000;
+	test_build_rbt_ost(n);
+	test_my_tree(n);
+	test_ostDSW_ostSED_ostMod(n);
 }
 
 void test_ostDSW_ostSED_ostMod (int N) {
+	if (!N) {
+		cout << "invalid tree size" << endl;
+		return;
+	}
+
+	cout << "Test OST balancing using DSW and Sedgewick's algorithm (also our modification) for " << N << " elements" << endl;
+
 	srand (time(NULL));
 
 	cout << endl<< "N:" << N << endl;
@@ -192,4 +196,57 @@ void buildSimpleOST (OST* ost) {
 	ost->insert(4);
 	ost->insert(5);
 	ost->insert(10);
+}
+
+void test_my_tree (int tree_size) {
+	if (!tree_size) {
+		cout << "invalid tree size" << endl;
+		return;
+	}
+
+	cout << "Test our tree balancing time for " << tree_size << " elements" << endl;
+
+	map<int, int> mymap;
+
+
+	Tree* t1 = new Tree();
+	Tree* t2 = new Tree();
+	clock_t start, finish;
+
+
+	for (int i = 0; i < tree_size; i++) {
+		int k;
+		if (rand() % 10 > 5) {
+			k = rand() % 100000000;
+		} else {
+			k = rand() % 1000;
+		}
+
+		if (mymap.find(k) == mymap.end()) {
+			mymap.insert(pair<int,int>(k, 1));
+			t1->insert(k);
+			t2->insert(k);
+		} else {
+			i--;
+			continue;
+		}
+	}
+
+	start = clock();
+	t1->balanceDSW();
+	finish = clock();
+	cout << "DSW balancing time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+
+	start = clock();
+	t2->balance();
+	finish = clock();
+	cout << "Sedge balancing time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+
+	t1->printHeight();
+	t2->printHeight();
+
+	t1->destroy();
+	t2->destroy();
+
+	cout << "Test finished." << endl;
 }
