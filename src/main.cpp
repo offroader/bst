@@ -18,7 +18,7 @@ void randomInsert(RBT*, OST*, int);
 
 int main (int argc, char** argv) {
 
-	test_build_rbt_ost(10000000);
+	test_build_rbt_ost(100);
 
 //	test_ostDSW_ostSED_ostMod(1000);
 //	test_ostDSW_ostSED_ostMod(10000);

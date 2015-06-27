@@ -326,7 +326,7 @@ public:
 		if (node == NULL) {
 			return 0;
 		} else {
-			return 1 + Max (count(node->left), count(node->right));
+			return 1 + Max (calculateHeight(node->left), calculateHeight(node->right));
 		}
 	}
 
