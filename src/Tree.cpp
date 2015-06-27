@@ -403,4 +403,34 @@ public:
              node->parent = parent;
 	     }
 	}
+
+	void tmp (Node* node) {
+		if (node == root) {
+			node->color = 0;
+			node->blackQuota = round(getHeight(node) / 2);
+		} else if (node->parent->color == 1) {
+			node->color = 0;
+			node->blackQuota = node->parent->blackQuota;
+		} else {
+			// node->parent is black
+		}
+
+//		if n is root,
+//		    n.color = black
+//		    n.black-quota = height n / 2, rounded up.
+//
+//		else if n.parent is red,
+//		    n.color = black
+//		    n.black-quota = n.parent.black-quota.
+//
+//		else (n.parent is black)
+//		    if n.min-height < n.parent.black-quota, then
+//		        error "shortest path was too short"
+//		    else if n.min-height = n.parent.black-quota then
+//		        n.color = black
+//		    else (n.min-height > n.parent.black-quota)
+//		        n.color = red
+//		    either way,
+//		        n.black-quota = n.parent.black-quota - 1
+	}
 };
