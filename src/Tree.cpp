@@ -39,7 +39,7 @@ public:
 		} else {
 			return 0;
 		}
-		z->color = 1;
+		z->meta = 1;
 
 		insertFixup(z);
 
@@ -47,13 +47,13 @@ public:
 	}
 
 	void insertFixup(Node* z) {
-		while (z->parent != NULL && z->parent->color == 1) {
+		while (z->parent != NULL && z->parent->meta == 1) {
 			if (z->parent == z->parent->parent->left) {
 				Node* y = z->parent->parent->right;
-				if (y != NULL && y->color == 1) {
-					z->parent->color = 0;
-					y->color = 0;
-					z->parent->parent->color = 1;
+				if (y != NULL && y->meta == 1) {
+					z->parent->meta = 0;
+					y->meta = 0;
+					z->parent->parent->meta = 1;
 					z = z->parent->parent;
 				} else {
 					if (z == z->parent->right) {
@@ -62,19 +62,19 @@ public:
 					}
 
 					if (z->parent != NULL) {
-						z->parent->color = 0;
+						z->parent->meta = 0;
 						if (z->parent->parent != NULL) {
-							z->parent->parent->color = 1;
+							z->parent->parent->meta = 1;
 							rotateRight(z->parent->parent);
 						}
 					}
 				}
 			} else {
 				Node* y = z->parent->parent->left;
-				if (y != NULL && y->color == 1) {
-					z->parent->color = 0;
-					y->color = 0;
-					z->parent->parent->color = 1;
+				if (y != NULL && y->meta == 1) {
+					z->parent->meta = 0;
+					y->meta = 0;
+					z->parent->parent->meta = 1;
 					z = z->parent->parent;
 				} else {
 					if (z == z->parent->left) {
@@ -82,16 +82,16 @@ public:
 						rotateRight(z);
 					}
 					if (z->parent != NULL) {
-						z->parent->color = 0;
+						z->parent->meta = 0;
 						if (z->parent->parent != NULL) {
-							z->parent->parent->color = 1;
+							z->parent->parent->meta = 1;
 							rotateLeft(z->parent->parent);
 						}
 					}
 				}
 			}
 		}
-		root->color = 0;
+		root->meta = 0;
 	}
 
 	void rotateLeft(Node* x) {
@@ -107,7 +107,7 @@ public:
 		if (x->parent == NULL) {
 			root = y;
 		} else if (x == x->parent->left) {
-			x->parent->left = (y);
+			x->parent->left = y;
 		} else {
 			x->parent->right = y;
 		}
@@ -129,7 +129,7 @@ public:
 		if (x->parent == NULL) {
 			root = y;
 		} else if (x == x->parent->left) {
-			x->parent->left = (y);
+			x->parent->left = y;
 		} else {
 			x->parent->right = y;
 		}
@@ -219,7 +219,7 @@ public:
 
 	inline int size (Node* x) {
 		if (x == NULL) return 0;
-		return x->size;
+		return x->meta;
 	}
 
 	Node* rotR (Node* h) {
@@ -227,8 +227,8 @@ public:
 		h->left = x->right;
 		x->right = h;
 
-		h->size = size(h->left) + size(h->right) + 1;
-		x->size = size(x->left) + size(x->right) + 1;
+		h->meta = size(h->left) + size(h->right) + 1;
+		x->meta = size(x->left) + size(x->right) + 1;
 
 		return x;
 	}
@@ -238,8 +238,8 @@ public:
           h->right = x->left;
           x->left = h;
 
-          h->size = size(h->left) + size(h->right) + 1;
-		x->size = size(x->left) + size(x->right) + 1;
+          h->meta = size(h->left) + size(h->right) + 1;
+		x->meta = size(x->left) + size(x->right) + 1;
 
           return x;
 	}
@@ -263,14 +263,36 @@ public:
 
 
 	Node* balanceR (Node* h) {
-	   if (h == NULL || h->size < 2) return h;
+	   if (h == NULL || h->meta < 2) return h;
 
-	   h = partR (h, h->size / 2);
+	   h = partR (h, h->meta / 2);
 
 	   h->left  = balanceR (h->left);
 	   h->right = balanceR (h->right);
 
 	   return h;
+	}
+
+	Node* balanceM (Node* x) {
+	   if (x == NULL || x->meta < 2) return x;
+
+	   int h = (int)log2(x->meta);
+
+	   if (x->meta <= 3 * (int)pow(2, h-1) - 1 ) {
+
+		   x = partR(x, x->meta - (int)pow(2, h-1) + 1 - 1);
+
+		   x-> left = balanceR(x->left);
+		   x->right = balanceM(x->right);
+	   } else {
+
+		   x = partR(x, (int)pow(2, h) - 1);
+
+		   x-> left = balanceM(x->left);
+		   x->right = balanceR(x->right);
+	   }
+
+	   return x;
 	}
 
 	void balance () {
@@ -327,7 +349,7 @@ public:
 			for (int i = 0; i < 7 * node_level; i++) {
 				printf(" ");
 			}
-			printf("%d (%d)\n" , x->key, x->size);
+			printf("%d (%d)\n" , x->key, x->meta);
 			drawTree(x->left);
 			node_level -= 1;
 	   }
@@ -365,9 +387,9 @@ public:
 	   int leftSize = updateSizes(h->left);
 	   int rightSize = updateSizes(h->right);
 
-	   h->size = 1 + leftSize + rightSize;
+	   h->meta = 1 + leftSize + rightSize;
 
-	   return h->size;
+	   return h->meta;
 	}
 
 	int getHeight (Node* node) {
@@ -389,7 +411,7 @@ public:
 	void updateColors (Node* h) {
 		if (h == NULL) return;
 
-		h->color = 0;
+		h->meta = 0;
 
 		updateColors(h->right);
 		updateColors(h->left);
@@ -406,11 +428,11 @@ public:
 
 	void tmp (Node* node) {
 		if (node == root) {
-			node->color = 0;
-			node->blackQuota = round(getHeight(node) / 2);
-		} else if (node->parent->color == 1) {
-			node->color = 0;
-			node->blackQuota = node->parent->blackQuota;
+			node->meta = 0;
+			//node->blackQuota = round(getHeight(node) / 2);
+		} else if (node->parent->meta == 1) {
+			node->meta = 0;
+			//node->blackQuota = node->parent->blackQuota;
 		} else {
 			// node->parent is black
 		}

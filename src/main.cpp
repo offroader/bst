@@ -18,10 +18,11 @@ void randomInsert(RBT*, OST*, int);
 void test_my_tree(int);
 
 int main (int argc, char** argv) {
-	int n = 1000000;
-	test_build_rbt_ost(n);
-	test_my_tree(n);
-	test_ostDSW_ostSED_ostMod(n);
+	for (int n = 1000; n <= 100000000; n *= 10) {
+		test_build_rbt_ost(n);
+		//test_ostDSW_ostSED_ostMod(n);
+		//test_my_tree(n);
+	}
 }
 
 void test_ostDSW_ostSED_ostMod (int N) {
@@ -102,7 +103,8 @@ void test_build_rbt_ost (int tree_size) {
 	cout << "Test RBT and OST building times for " << tree_size << " elements" << endl;
 
 	map<int, int> mymap;
-	int arr[tree_size];
+	//int arr[tree_size];
+	int* arr = new int[tree_size];
 
 	for (int i = 0; i < tree_size; i++) {
 		int k;
@@ -156,7 +158,7 @@ void test_build_rbt_ost (int tree_size) {
 	rbt->destroy();
 	ost->destroy();
 
-//	free(arr);
+	free(arr);
 
 	cout << "Test finished." << endl;
 }

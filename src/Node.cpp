@@ -8,18 +8,14 @@ public:
 	Node* parent;
 	Node* left;
 	Node* right;
-	int color;
-	int size;
-	int blackQuota;
+	int meta;
 
 	Node (int key) {
 		this->key = key;
 		parent = NULL;
 		left = NULL;
 		right = NULL;
-		color = 0;
-		size = 0;
-		blackQuota = 0;
+		meta = 0;
 	}
 
 	virtual ~Node() {};

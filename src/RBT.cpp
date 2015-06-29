@@ -146,7 +146,7 @@ public:
 		if (x->parent == NULL) {
 			root = y;
 		} else if (x == x->parent->left) {
-			x->parent->left = (y);
+			x->parent->left = y;
 		} else {
 			x->parent->right = y;
 		}
@@ -164,7 +164,7 @@ public:
 		if (x->parent == NULL) {
 			root = y;
 		} else if (x == x->parent->left) {
-			x->parent->left = (y);
+			x->parent->left = y;
 		} else {
 			x->parent->right = y;
 		}
