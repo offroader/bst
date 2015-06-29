@@ -16,13 +16,19 @@ void test_ostDSW_ostSED_ostMod(int);
 void test_build_rbt_ost(int);
 void randomInsert(RBT*, OST*, int);
 void test_my_tree(int);
+void buildSimpleTree(Tree*);
 
 int main (int argc, char** argv) {
-	for (int n = 1000; n <= 100000000; n *= 10) {
-		test_build_rbt_ost(n);
-		//test_ostDSW_ostSED_ostMod(n);
-		//test_my_tree(n);
-	}
+//	for (int n = 1000; n <= 100000000; n *= 10) {
+//		test_build_rbt_ost(n);
+//		test_ostDSW_ostSED_ostMod(n);
+//		test_my_tree(n);
+//	}
+
+	Tree* tree = new Tree();
+	buildSimpleTree(tree);
+	tree->draw();
+	tree->destroy();
 }
 
 void test_ostDSW_ostSED_ostMod (int N) {
@@ -198,6 +204,20 @@ void buildSimpleOST (OST* ost) {
 	ost->insert(4);
 	ost->insert(5);
 	ost->insert(10);
+}
+
+void buildSimpleTree (Tree* tree) {
+	tree->insert(30);
+	tree->insert(1);
+	tree->insert(3);
+	tree->insert(2);
+	tree->insert(20);
+	tree->insert(8);
+	tree->insert(9);
+	tree->insert(7);
+	tree->insert(4);
+	tree->insert(5);
+	tree->insert(10);
 }
 
 void test_my_tree (int tree_size) {

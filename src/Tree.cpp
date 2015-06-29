@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
+#include <cmath>
 #include "Node.cpp"
 
 using namespace std;
@@ -296,16 +297,10 @@ public:
 	}
 
 	void balance () {
-		clock_t start, finish;
-		start = clock();
 		convertToOST();
-		finish = clock();
-		//cout << "Converting to ost time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
-
-		start = clock();
 		root = balanceR(root);
-		finish = clock();
-		//cout << "BalanceR time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+		updateParents(root, NULL);
+		colorTree(root);
 	}
 
 
@@ -349,7 +344,11 @@ public:
 			for (int i = 0; i < 7 * node_level; i++) {
 				printf(" ");
 			}
-			printf("%d (%d)\n" , x->key, x->meta);
+			if (mode == "RBT") {
+				printf("%d (%s)\n" , x->key, x->meta == 1 ? "R" : "B");
+			} else {
+				printf("%d (%d)\n" , x->key, x->meta);
+			}
 			drawTree(x->left);
 			node_level -= 1;
 	   }
@@ -454,5 +453,45 @@ public:
 //		        n.color = red
 //		    either way,
 //		        n.black-quota = n.parent.black-quota - 1
+	}
+
+	int getLeftHeight (Node* node) {
+		if (node == NULL) {
+			return 0;
+		} else {
+			return 1 + getLeftHeight(node->left);
+		}
+	}
+
+	int getRightHeight (Node* node) {
+		if (node == NULL) {
+			return 0;
+		} else {
+			return 1 + getRightHeight(node->right);
+		}
+	}
+
+	int getMinHeight () {
+		return getRightHeight(root);
+	}
+
+	int getMaxHeight () {
+		return getLeftHeight(root);
+	}
+
+	void repaintTree () {
+
+	}
+
+	void colorTree (Node* node) {
+		static int level = -1;
+		int minHeight = getMinHeight();
+		int maxHeight = getMaxHeight();
+		if (node != NULL) {
+			level += 1;
+			colorTree(node->right);
+			colorTree(node->left);
+			level -= 1;
+	   }
 	}
 };
