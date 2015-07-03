@@ -24,7 +24,7 @@ int main (int argc, char** argv) {
 	for (int n = 1000; n <= MAX_TREE_SIZE; n *= 10) {
 		//test_rbtDSW_rbtSED(n);
 	}
-	test_rbtDSW_rbtSED(10000000);
+	test_rbtDSW_rbtSED(MAX_TREE_SIZE);
 }
 
 void test_ostDSW_ostSED_ostMod (int N) {
@@ -169,7 +169,7 @@ void test_rbtDSW_rbtSED1 (int tree_size) {
 	cout << "building...." << endl;
 
 	for (int i = 0; i < tree_size; i++) {
-		int k = rand() % MAX_TREE_SIZE;
+		int k = rand() % MAX_KEY_VALUE;
 		if (arr[k] != 1) {
 			arr[k] = 1;
 			t1->insert(k);
@@ -239,31 +239,69 @@ void fill (Tree* tree) {
 		tree->insert(410);
 }
 
-void test_rbtDSW_rbtSED (int tree_size) {
+void test_rbtDSW (int tree_size) {
 	if (!tree_size || tree_size > MAX_TREE_SIZE) {
 		cout << "Invalid tree size" << endl;
 		return;
 	}
 	cout << "Test red-black tree balancing times for " << tree_size << " elements" << endl;
 
-	Tree* t1 = new Tree();
+	Tree* tree = new Tree();
 	clock_t start, finish;
 
+	start = clock();
 	cout << "building...." << endl;
 	for (int i = 0; i < tree_size; i++) {
-		t1->insert(rand() % MAX_TREE_SIZE);
+		tree->insert(rand() % MAX_KEY_VALUE);
 	}
-	cout << "balancing...." << endl;
+	finish = clock();
+	cout << "building time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
 
+
+	cout << "balancing...." << endl;
 	start = clock();
-	t1->balanceDSW();
+	tree->balanceDSW();
 	finish = clock();
 	cout << "DSW balancing time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
 
-	t1->printSize();
-	t1->printHeight();
+	tree->printSize();
+	tree->printHeight();
 
-	t1->destroy();
+	tree->destroy();
+
+	cout << "Test finished." << endl;
+}
+
+
+void test_rbtSED (int tree_size) {
+	if (!tree_size || tree_size > MAX_TREE_SIZE) {
+		cout << "Invalid tree size" << endl;
+		return;
+	}
+	cout << "Test red-black tree balancing times for " << tree_size << " elements" << endl;
+
+	Tree* tree = new Tree();
+	clock_t start, finish;
+
+	start = clock();
+	cout << "building...." << endl;
+	for (int i = 0; i < tree_size; i++) {
+		tree->insert(rand() % MAX_KEY_VALUE);
+	}
+	finish = clock();
+	cout << "building time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+
+
+	cout << "balancing...." << endl;
+	start = clock();
+	tree->balance();
+	finish = clock();
+	cout << "Sedgewick balancing time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+
+	tree->printSize();
+	tree->printHeight();
+
+	tree->destroy();
 
 	cout << "Test finished." << endl;
 }
