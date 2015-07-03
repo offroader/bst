@@ -14,28 +14,22 @@ using namespace std;
 
 void test_ostDSW_ostSED_ostMod(int);
 void test_build_rbt_ost(int);
-void run_demo(int);
+void test_rbtDSW_rbtSED(int);
 void fill(Tree*);
 
+static int MAX_KEY_VALUE = 1000000000;
+static int MAX_TREE_SIZE = 100000000;
+
 int main (int argc, char** argv) {
-//	for (int n = 1000; n <= 100000000; n *= 10) {
-//		test_build_rbt_ost(n);
-//		test_ostDSW_ostSED_ostMod(n);
-//		run_demo(n);
-//	}
-
-	Tree* tree = new Tree();
-
-fill(tree);
-
-	tree->draw();
-
-	tree->destroy();
+	for (int n = 1000; n <= MAX_TREE_SIZE; n *= 10) {
+		//test_rbtDSW_rbtSED(n);
+	}
+	test_rbtDSW_rbtSED(10000000);
 }
 
 void test_ostDSW_ostSED_ostMod (int N) {
-	if (!N) {
-		cout << "invalid tree size" << endl;
+	if (!N || N > MAX_TREE_SIZE) {
+		cout << "Invalid tree size" << endl;
 		return;
 	}
 
@@ -52,12 +46,7 @@ void test_ostDSW_ostSED_ostMod (int N) {
 	OST* ost3 = new OST();
 
 	for (int i = 0; i < N; i++) {
-		int k;
-		if (rand() % 10 > 5) {
-			k = rand() % 10000000000;
-		} else {
-			k = rand() % 1000;
-		}
+		int k = rand() % MAX_KEY_VALUE;
 
 		if (mymap.find(k) == mymap.end()) {
 			mymap.insert(pair<int,int>(k, 1));
@@ -103,24 +92,18 @@ void test_ostDSW_ostSED_ostMod (int N) {
 }
 
 void test_build_rbt_ost (int tree_size) {
-	if (!tree_size) {
-		cout << "invalid tree size" << endl;
+	if (!tree_size || tree_size > MAX_TREE_SIZE) {
+		cout << "Invalid tree size" << endl;
 		return;
 	}
 
 	cout << "Test RBT and OST building times for " << tree_size << " elements" << endl;
 
 	map<int, int> mymap;
-	//int arr[tree_size];
 	int* arr = new int[tree_size];
 
 	for (int i = 0; i < tree_size; i++) {
-		int k;
-		if (rand() % 10 > 5) {
-			k = rand() % 10000000000;
-		} else {
-			k = rand() % 1000;
-		}
+		int k = rand() % MAX_KEY_VALUE;
 
 		if (mymap.find(k) == mymap.end()) {
 			mymap.insert(pair<int,int>(k, 1));
@@ -130,7 +113,6 @@ void test_build_rbt_ost (int tree_size) {
 			continue;
 		}
 	}
-
 	//for (map<int, int>::iterator it = mymap.begin(); it != mymap.end(); ++it) {}
 
 	// check
@@ -171,37 +153,37 @@ void test_build_rbt_ost (int tree_size) {
 	cout << "Test finished." << endl;
 }
 
-void run_demo (int tree_size) {
-	if (!tree_size) {
-		cout << "invalid tree size" << endl;
+void test_rbtDSW_rbtSED1 (int tree_size) {
+	if (!tree_size || tree_size > MAX_TREE_SIZE) {
+		cout << "Invalid tree size" << endl;
 		return;
 	}
-	cout << "Test our tree balancing time for " << tree_size << " elements" << endl;
+	cout << "Test red-black tree balancing times for " << tree_size << " elements" << endl;
 
-	map<int, int> mymap;
+	int* arr = new int[MAX_TREE_SIZE];
 
 	Tree* t1 = new Tree();
 	Tree* t2 = new Tree();
 	clock_t start, finish;
 
+	cout << "building...." << endl;
 
 	for (int i = 0; i < tree_size; i++) {
-		int k;
-		if (rand() % 10 > 5) {
-			k = rand() % 10000000000;
-		} else {
-			k = rand() % 1000;
-		}
-
-		if (mymap.find(k) == mymap.end()) {
-			mymap.insert(pair<int,int>(k, 1));
+		int k = rand() % MAX_TREE_SIZE;
+		if (arr[k] != 1) {
+			arr[k] = 1;
 			t1->insert(k);
 			t2->insert(k);
+			if (i % 1000000 == 0) cout << i << endl;
 		} else {
 			i--;
 			continue;
 		}
 	}
+
+	free(arr);
+
+	cout << "balancing...." << endl;
 
 	start = clock();
 	t1->balanceDSW();
@@ -222,106 +204,66 @@ void run_demo (int tree_size) {
 	cout << "Test finished." << endl;
 }
 
-
 void fill (Tree* tree) {
 	tree->insert(710);
-	tree->insert(231);
-	tree->insert(462);
-	tree->insert(317);
-	tree->insert(464);
-	tree->insert(305);
-	tree->insert(872);
-	tree->insert(511);
-	tree->insert(827);
-	tree->insert(588);
-	tree->insert(761);
-	tree->insert(277);
-	tree->insert(559);
-	tree->insert(416);
-	tree->insert(536);
-	tree->insert(384);
-	tree->insert(45);
-	tree->insert(461);
-	tree->insert(718);
-	tree->insert(290);
-	tree->insert(666);
-	tree->insert(269);
-	tree->insert(583);
-	tree->insert(413);
-	tree->insert(755);
-	tree->insert(129);
-	tree->insert(406);
-	tree->insert(575);
-	tree->insert(396);
-	tree->insert(813);
-	tree->insert(262);
-	tree->insert(410);
-	tree->insert(238);
-	tree->insert(358);
-	tree->insert(151);
-	tree->insert(885);
-	tree->insert(664);
-	tree->insert(690);
-	tree->insert(204);
-	tree->insert(583);
-	tree->insert(254);
-	tree->insert(284);
-	tree->insert(307);
-	tree->insert(341);
-	tree->insert(495);
-	tree->insert(475);
-	tree->insert(611);
-	tree->insert(330);
-	tree->insert(982);
-	tree->insert(938);
-	tree->insert(361);
-	tree->insert(919);
-	tree->insert(121);
-	tree->insert(689);
-	tree->insert(412);
-	tree->insert(86);
-	tree->insert(433);
-	tree->insert(947);
-	tree->insert(653);
-	tree->insert(242);
-	tree->insert(629);
-	tree->insert(858);
-	tree->insert(950);
-	tree->insert(801);
-	tree->insert(640);
-	tree->insert(363);
-	tree->insert(568);
-	tree->insert(252);
-	tree->insert(474);
-	tree->insert(144);
-	tree->insert(537);
-	tree->insert(241);
-	tree->insert(293);
-	tree->insert(492);
-	tree->insert(4);
-	tree->insert(20);
-	tree->insert(860);
-	tree->insert(731);
-	tree->insert(703);
-	tree->insert(197);
-	tree->insert(859);
-	tree->insert(534);
-	tree->insert(487);
-	tree->insert(589);
-	tree->insert(46);
-	tree->insert(146);
-	tree->insert(306);
-	tree->insert(102);
-	tree->insert(351);
-	tree->insert(789);
-	tree->insert(328);
-	tree->insert(32);
-	tree->insert(158);
-	tree->insert(896);
-	tree->insert(833);
-	tree->insert(299);
-	tree->insert(407);
-	tree->insert(498);
-	tree->insert(227);
-	tree->insert(441);
+		tree->insert(231);
+		tree->insert(462);
+		tree->insert(317);
+		tree->insert(464);
+		tree->insert(305);
+		tree->insert(872);
+		tree->insert(511);
+		tree->insert(827);
+		tree->insert(588);
+		tree->insert(761);
+		tree->insert(277);
+		tree->insert(559);
+		tree->insert(416);
+		tree->insert(536);
+		tree->insert(384);
+		tree->insert(45);
+		tree->insert(461);
+		tree->insert(718);
+		tree->insert(290);
+		tree->insert(666);
+		tree->insert(269);
+		tree->insert(583);
+		tree->insert(413);
+		tree->insert(755);
+		tree->insert(129);
+		tree->insert(406);
+		tree->insert(575);
+		tree->insert(396);
+		tree->insert(813);
+		tree->insert(262);
+		tree->insert(410);
+}
+
+void test_rbtDSW_rbtSED (int tree_size) {
+	if (!tree_size || tree_size > MAX_TREE_SIZE) {
+		cout << "Invalid tree size" << endl;
+		return;
+	}
+	cout << "Test red-black tree balancing times for " << tree_size << " elements" << endl;
+
+	Tree* t1 = new Tree();
+	clock_t start, finish;
+
+	cout << "building...." << endl;
+	for (int i = 0; i < tree_size; i++) {
+		t1->insert(rand() % MAX_TREE_SIZE);
+	}
+	cout << "balancing...." << endl;
+
+	start = clock();
+	t1->balanceDSW();
+	finish = clock();
+	cout << "DSW balancing time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+
+	t1->printSize();
+	t1->printHeight();
+
+	t1->destroy();
+
+	cout << "Test finished." << endl;
 }

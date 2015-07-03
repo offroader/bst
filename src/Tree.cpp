@@ -204,19 +204,11 @@ public:
 		vine_to_tree(pseudo_root, size);
 
 		root = pseudo_root->right;
+
+		updateParents(root, NULL);
 	}
 
-	// balance
-
-	void convertToOST () {
-		updateSizes(root);
-		mode = "OST";
-	}
-
-	void convertRBT () {
-		updateColors(root);
-		mode = "RBT";
-	}
+	// balancing methods
 
 	inline int size (Node* x) {
 		if (x == NULL) return 0;
@@ -297,10 +289,12 @@ public:
 	}
 
 	void balance () {
-		convertToOST();
+		int size = updateSizes(root); // converts to ost
+		int maxHeight = (int)log2(size);
+//		mode = "OST";
 		root = balanceR(root);
-		updateParents(root, NULL);
-		colorTree(root);
+		colorTree(root, maxHeight, NULL); // converts to rbt
+//		mode = "RBT";
 	}
 
 
@@ -345,7 +339,7 @@ public:
 				printf(" ");
 			}
 			if (mode == "RBT") {
-				printf("%d (%s)\n" , x->key, x->meta == 1 ? "R" : "B");
+				printf("%d - %d (%s)\n" , x->key, node_level, x->meta == 1 ? "R" : "B");
 			} else {
 				printf("%d (%d)\n" , x->key, x->meta);
 			}
@@ -391,6 +385,15 @@ public:
 	   return h->meta;
 	}
 
+	// correct tree after balanceR
+	void updateParents (Node* node, Node* parent) {
+		if (node != NULL) {
+			updateParents (node->left, node);
+			updateParents (node->right, node);
+			node->parent = parent;
+		}
+	}
+
 	int getHeight (Node* node) {
 		if (node == NULL) {
 			return 0;
@@ -407,91 +410,15 @@ public:
 		}
 	}
 
-	void updateColors (Node* h) {
-		if (h == NULL) return;
-
-		h->meta = 0;
-
-		updateColors(h->right);
-		updateColors(h->left);
-	}
-
-	// correct tree after balanceR
-	void updateParents (Node* node, Node* parent) {
-		 if (node != NULL) {
-			 updateParents (node->left, node);
-			 updateParents (node->right, node);
-             node->parent = parent;
-	     }
-	}
-
-	void tmp (Node* node) {
-		if (node == root) {
-			node->meta = 0;
-			//node->blackQuota = round(getHeight(node) / 2);
-		} else if (node->parent->meta == 1) {
-			node->meta = 0;
-			//node->blackQuota = node->parent->blackQuota;
-		} else {
-			// node->parent is black
-		}
-
-//		if n is root,
-//		    n.color = black
-//		    n.black-quota = height n / 2, rounded up.
-//
-//		else if n.parent is red,
-//		    n.color = black
-//		    n.black-quota = n.parent.black-quota.
-//
-//		else (n.parent is black)
-//		    if n.min-height < n.parent.black-quota, then
-//		        error "shortest path was too short"
-//		    else if n.min-height = n.parent.black-quota then
-//		        n.color = black
-//		    else (n.min-height > n.parent.black-quota)
-//		        n.color = red
-//		    either way,
-//		        n.black-quota = n.parent.black-quota - 1
-	}
-
-	int getLeftHeight (Node* node) {
-		if (node == NULL) {
-			return 0;
-		} else {
-			return 1 + getLeftHeight(node->left);
-		}
-	}
-
-	int getRightHeight (Node* node) {
-		if (node == NULL) {
-			return 0;
-		} else {
-			return 1 + getRightHeight(node->right);
-		}
-	}
-
-	int getMinHeight () {
-		return getRightHeight(root);
-	}
-
-	int getMaxHeight () {
-		return getLeftHeight(root);
-	}
-
-	void repaintTree () {
-
-	}
-
-	void colorTree (Node* node) {
+	void colorTree (Node* node, int maxHeight, Node* parent) {
 		static int level = -1;
-		int minHeight = getMinHeight();
-		int maxHeight = getMaxHeight();
 		if (node != NULL) {
-			level += 1;
-			colorTree(node->right);
-			colorTree(node->left);
-			level -= 1;
+			level++;
+			node->meta = level < maxHeight ? 0 : 1; // set color BLACK(0) or RED(1)
+			node->parent = parent; // update parent field
+			colorTree(node->right, maxHeight, node);
+			colorTree(node->left, maxHeight, node);
+			level--;
 	   }
 	}
 };
