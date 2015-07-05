@@ -1,0 +1,20 @@
+Test red-black tree balancing times for 100000000 elements
+building....
+building time: 207618 ms
+Tree size: 97479684
+Tree height: 32
+balancing....
+DSW balancing time: 60169.3 ms
+Tree size: 97479684
+Tree height: 27
+Test finished.
+
+
+Test red-black tree balancing times for 100000000 elements
+building....
+building time: 216564 ms
+balancing....
+Sedgewick balancing time: 42673.3 ms
+Tree size: 97479684
+Tree height: 27
+Test finished.

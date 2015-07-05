@@ -14,17 +14,20 @@ using namespace std;
 
 void test_ostDSW_ostSED_ostMod(int);
 void test_build_rbt_ost(int);
-void test_rbtDSW_rbtSED(int);
+void test_rbtDSW_rbtSED1(int);
+void test_rbtDSW(int);
+void test_rbtSED(int);
 void fill(Tree*);
 
 static int MAX_KEY_VALUE = 1000000000;
 static int MAX_TREE_SIZE = 100000000;
 
 int main (int argc, char** argv) {
-	for (int n = 1000; n <= MAX_TREE_SIZE; n *= 10) {
-		//test_rbtDSW_rbtSED(n);
-	}
-	test_rbtDSW_rbtSED(MAX_TREE_SIZE);
+	//for (int n = 1000; n <= MAX_TREE_SIZE; n *= 10) {}
+
+//	test_rbtDSW(MAX_TREE_SIZE);
+	test_rbtSED(MAX_TREE_SIZE);
+
 }
 
 void test_ostDSW_ostSED_ostMod (int N) {
@@ -257,6 +260,8 @@ void test_rbtDSW (int tree_size) {
 	finish = clock();
 	cout << "building time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
 
+	tree->printSize();
+	tree->printHeight();
 
 	cout << "balancing...." << endl;
 	start = clock();
