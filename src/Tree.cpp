@@ -16,6 +16,23 @@ public:
 		mode = "RBT";
 	}
 
+	// search
+	int find(int key) {
+		Node* x = root;
+
+		while (x != NULL) {
+			if (key == x->key) {
+				return 1;
+			} else if (key < x->key) {
+				x = x->left;
+			} else {
+				x = x->right;
+			}
+		}
+
+		return 0;
+	}
+
 	// insertion methods
 
 	int insertNode(Node* z) {

@@ -14,20 +14,17 @@ using namespace std;
 
 void test_ostDSW_ostSED_ostMod(int);
 void test_build_rbt_ost(int);
-void test_rbtDSW_rbtSED1(int);
+void test_rbtDSW_rbtSED(int);
 void test_rbtDSW(int);
 void test_rbtSED(int);
-void fill(Tree*);
+void test_search_rbt_balancedrbt();
 
 static int MAX_KEY_VALUE = 1000000000;
 static int MAX_TREE_SIZE = 100000000;
 
 int main (int argc, char** argv) {
 	//for (int n = 1000; n <= MAX_TREE_SIZE; n *= 10) {}
-
-//	test_rbtDSW(MAX_TREE_SIZE);
-	test_rbtSED(MAX_TREE_SIZE);
-
+	test_search_rbt_balancedrbt();
 }
 
 void test_ostDSW_ostSED_ostMod (int N) {
@@ -156,8 +153,8 @@ void test_build_rbt_ost (int tree_size) {
 	cout << "Test finished." << endl;
 }
 
-void test_rbtDSW_rbtSED1 (int tree_size) {
-	if (!tree_size || tree_size > MAX_TREE_SIZE) {
+void test_rbtDSW_rbtSED (int tree_size) {
+	if (!tree_size || tree_size > MAX_TREE_SIZE/10) {
 		cout << "Invalid tree size" << endl;
 		return;
 	}
@@ -207,43 +204,8 @@ void test_rbtDSW_rbtSED1 (int tree_size) {
 	cout << "Test finished." << endl;
 }
 
-void fill (Tree* tree) {
-	tree->insert(710);
-		tree->insert(231);
-		tree->insert(462);
-		tree->insert(317);
-		tree->insert(464);
-		tree->insert(305);
-		tree->insert(872);
-		tree->insert(511);
-		tree->insert(827);
-		tree->insert(588);
-		tree->insert(761);
-		tree->insert(277);
-		tree->insert(559);
-		tree->insert(416);
-		tree->insert(536);
-		tree->insert(384);
-		tree->insert(45);
-		tree->insert(461);
-		tree->insert(718);
-		tree->insert(290);
-		tree->insert(666);
-		tree->insert(269);
-		tree->insert(583);
-		tree->insert(413);
-		tree->insert(755);
-		tree->insert(129);
-		tree->insert(406);
-		tree->insert(575);
-		tree->insert(396);
-		tree->insert(813);
-		tree->insert(262);
-		tree->insert(410);
-}
-
 void test_rbtDSW (int tree_size) {
-	if (!tree_size || tree_size > MAX_TREE_SIZE) {
+	if (!tree_size || tree_size > MAX_TREE_SIZE/10) {
 		cout << "Invalid tree size" << endl;
 		return;
 	}
@@ -279,7 +241,7 @@ void test_rbtDSW (int tree_size) {
 
 
 void test_rbtSED (int tree_size) {
-	if (!tree_size || tree_size > MAX_TREE_SIZE) {
+	if (!tree_size || tree_size > MAX_TREE_SIZE/10) {
 		cout << "Invalid tree size" << endl;
 		return;
 	}
@@ -309,4 +271,77 @@ void test_rbtSED (int tree_size) {
 	tree->destroy();
 
 	cout << "Test finished." << endl;
+}
+
+
+void test_search_rbt_balancedrbt () {
+	int tree_size = 10000000;
+	int search_size = 100000000;
+
+	Tree* tree = new Tree();
+//	int* arr = new int[search_size];
+	clock_t start, finish;
+	int found, notFound;
+
+	start = clock();
+	cout << "building tree...." << endl;
+	for (int i = 0; i < tree_size; i++) {
+		tree->insert(rand() % MAX_KEY_VALUE);
+	}
+	finish = clock();
+	cout << "building time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+
+//	cout << "building search array..." << endl;
+//	for (int i = 0; i < search_size; i++) {
+//		arr[i] = rand() % MAX_KEY_VALUE;
+//	}
+//	cout << "search array is created. size: " << search_size << endl;
+
+	cout << endl;
+	tree->printSize();
+	tree->printHeight();
+
+	cout << endl;
+	found = 0;
+	notFound = 0;
+	start = clock();
+	cout << "searching...." << endl;
+	for (int i = 0; i < search_size; i++) {
+//		if (tree->find(arr[i]) == 1) found++;
+//		if (tree->find(i) == 1) found++;
+//		else notFound++;
+		tree->find(i);
+	}
+	finish = clock();
+	cout << "searching time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+	cout << "found: "<< found << ". notFound: " << notFound << endl;
+
+	cout << endl;
+	cout << "balancing...." << endl;
+	start = clock();
+	tree->balanceDSW();
+	finish = clock();
+	cout << "balancing time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+
+	cout << endl;
+	tree->printSize();
+	tree->printHeight();
+
+	cout << endl;
+	found = 0;
+	notFound = 0;
+	start = clock();
+	cout << "searching...." << endl;
+	for (int i = 0; i < search_size; i++) {
+		//if (tree->find(arr[i]) == 1) found++;
+		tree->find(i);
+	}
+	finish = clock();
+	cout << "searching time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+	cout << "found: "<< found << ". notFound: " << notFound << endl;
+
+	tree->destroy();
+
+	cout << endl;
+	cout << "Test finished successfully." << endl;
 }
