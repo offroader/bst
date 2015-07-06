@@ -286,7 +286,8 @@ void test_search_rbt_balancedrbt () {
 	start = clock();
 	cout << "building tree...." << endl;
 	for (int i = 0; i < tree_size; i++) {
-		tree->insert(rand() % MAX_KEY_VALUE);
+		//tree->insert(rand() % MAX_KEY_VALUE);
+		tree->insert(i);
 	}
 	finish = clock();
 	cout << "building time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
@@ -300,6 +301,7 @@ void test_search_rbt_balancedrbt () {
 	cout << endl;
 	tree->printSize();
 	tree->printHeight();
+	tree->printRoot();
 
 	cout << endl;
 	found = 0;
@@ -326,6 +328,7 @@ void test_search_rbt_balancedrbt () {
 	cout << endl;
 	tree->printSize();
 	tree->printHeight();
+	tree->printRoot();
 
 	cout << endl;
 	found = 0;
