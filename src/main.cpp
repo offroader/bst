@@ -17,14 +17,15 @@ void test_build_rbt_ost(int);
 void test_rbtDSW_rbtSED(int);
 void test_rbtDSW(int);
 void test_rbtSED(int);
-void test_search_rbt_balancedrbt();
+void test_search_inorderrbt_then_balanced();
+void test_search_random_rbt_then_balanced ();
 
 static int MAX_KEY_VALUE = 1000000000;
 static int MAX_TREE_SIZE = 100000000;
 
 int main (int argc, char** argv) {
 	//for (int n = 1000; n <= MAX_TREE_SIZE; n *= 10) {}
-	test_search_rbt_balancedrbt();
+	test_search_inorderrbt_then_balanced();
 }
 
 void test_ostDSW_ostSED_ostMod (int N) {
@@ -274,9 +275,72 @@ void test_rbtSED (int tree_size) {
 }
 
 
-void test_search_rbt_balancedrbt () {
+void test_search_inorderrbt_then_balanced () {
 	int tree_size = 10000000;
-	int search_size = 100000000;
+	int search_size = 1000000000;
+
+	clock_t start, finish;
+	int found, notFound;
+
+	Tree* tree = new Tree();
+
+	cout << "building tree..." << endl;
+	for (int i = 0; i < tree_size; i++) {
+		tree->insert(i);
+	}
+	tree->printSize();
+	tree->printHeight();
+	tree->printRoot();
+
+	cout << endl;
+	found = 0;
+	notFound = 0;
+	start = clock();
+	cout << "searching...." << endl;
+	for (int i = 0; i < search_size; i++) {
+		if (tree->find(i) == 1) found++;
+		else notFound++;
+	}
+	finish = clock();
+	cout << "searching time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+	cout << "found: "<< found << ". notFound: " << notFound << endl;
+
+	cout << endl;
+	cout << "balancing...." << endl;
+	start = clock();
+	tree->balanceDSW();
+	finish = clock();
+	cout << "balancing time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+
+	cout << endl;
+	tree->printSize();
+	tree->printHeight();
+	tree->printRoot();
+
+	cout << endl;
+	found = 0;
+	notFound = 0;
+	start = clock();
+	cout << "searching...." << endl;
+	for (int i = 0; i < search_size; i++) {
+		//if (tree->find(arr[i]) == 1) found++;
+		tree->find(i);
+	}
+	finish = clock();
+	cout << "searching time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+	cout << "found: "<< found << ". notFound: " << notFound << endl;
+
+	tree->destroy();
+
+	cout << endl;
+	cout << "Test finished successfully." << endl;
+}
+
+
+
+void test_search_random_rbt_then_balanced () {
+	int tree_size = 10000000;
+	int search_size = 1000000000;
 
 	Tree* tree = new Tree();
 //	int* arr = new int[search_size];
