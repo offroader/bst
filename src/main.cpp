@@ -276,8 +276,8 @@ void test_rbtSED (int tree_size) {
 
 
 void test_search_inorderrbt_then_balanced () {
-	int tree_size = 10000000;
-	int search_size = 1000000000;
+	int tree_size = 1000000;
+	int search_size = 1000000;
 
 	clock_t start, finish;
 	int found, notFound;
@@ -323,8 +323,8 @@ void test_search_inorderrbt_then_balanced () {
 	start = clock();
 	cout << "searching...." << endl;
 	for (int i = 0; i < search_size; i++) {
-		//if (tree->find(arr[i]) == 1) found++;
-		tree->find(i);
+		if (tree->find(i) == 1) found++;
+		else notFound++;
 	}
 	finish = clock();
 	cout << "searching time: " << ((double) (finish - start)) / 1000 << " ms" << endl;
