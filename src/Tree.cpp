@@ -292,14 +292,14 @@ public:
 
 		   x = partR(x, x->meta - (int)pow(2, h-1) + 1 - 1);
 
-		   x-> left = balanceR(x->left);
-		   x->right = balanceM(x->right);
+		   x->left = balanceM(x->left);
+		   x->right = balanceR(x->right);
 	   } else {
 
 		   x = partR(x, (int)pow(2, h) - 1);
 
-		   x-> left = balanceM(x->left);
-		   x->right = balanceR(x->right);
+		   x->left = balanceR(x->left);
+		   x->right = balanceM(x->right);
 	   }
 
 	   return x;
