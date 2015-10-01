@@ -20,12 +20,41 @@ void test_rbtSED(int);
 void test_search_inorderrbt_then_balanced();
 void test_search_random_rbt_then_balanced ();
 
+void building_rbt_random (int);
+
 static int MAX_KEY_VALUE = 1000000000;
 static int MAX_TREE_SIZE = 100000000;
 
 int main (int argc, char** argv) {
-	//for (int n = 1000; n <= MAX_TREE_SIZE; n *= 10) {}
-	test_search_inorderrbt_then_balanced();
+	for (int i = 1000; i <= MAX_TREE_SIZE; i *= 10) {
+	}
+
+	building_rbt_random(MAX_TREE_SIZE);
+}
+
+void building_rbt_random (int tree_size) {
+	if (!tree_size || tree_size > MAX_TREE_SIZE) {
+		cout << "Invalid tree size" << endl;
+		return;
+	}
+	cout << "Building Red-black tree with " << tree_size << " nodes. Randomly" << endl;
+
+	Tree* tree = new Tree();
+	clock_t start, finish;
+
+	cout << "started..." << endl;
+	start = clock();
+	for (int i = 0; i < tree_size; i++) {
+		tree->insert(rand() % MAX_KEY_VALUE);
+		if (i % 1000000 == 0) cout << i << endl;
+	}
+	finish = clock();
+	cout << "finished in: " << ((double) (finish - start)) / 1000 << " ms" << endl;
+
+	tree->printSize();
+	tree->printHeight();
+
+	cout << "Test completed successfully!" << endl << endl;
 }
 
 void test_ostDSW_ostSED_ostMod (int N) {

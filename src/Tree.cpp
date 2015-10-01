@@ -402,7 +402,7 @@ public:
 	   return h->meta;
 	}
 
-	// correct tree after balanceR
+	// corrects parent pointer values after rotations
 	void updateParents (Node* node, Node* parent) {
 		if (node != NULL) {
 			updateParents (node->left, node);
